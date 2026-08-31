@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan &amp; Blueprint PLN ES</title>
+<script>
+  (function () {
+    try {
+      var t = null;
+      try {
+        var p = new URLSearchParams(window.location.search).get('theme');
+        if (p === 'light' || p === 'dark') t = p;
+      } catch (_) {}
+      if (!t) { try { t = localStorage.getItem('home-theme'); } catch (_) {} }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (_) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<style>
+:root,
+[data-theme="dark"] {
+  --bg:            #06131f;
+  --grid:          #12324a;
+  --text:          #e3f6ff;
+  --text-muted:    #91b8ca;
+  --text-dim:      #557e92;
+  --text-faint:    #739caf;
+
+  --panel:         rgba(7, 27, 43, 0.9);
+  --panel-2:       rgba(10, 38, 58, 0.6);
+  --panel-border:  #27627f;
+  --rule:          #1b4a66;
+
+  --chrome-bg:     rgba(7, 28, 45, 0.92);
+  --chrome-border: #34799a;
+  --chrome-text:   #d8f3ff;
+  --chrome-hover:  rgba(18, 58, 83, 0.95);
+  --shadow:        0 18px 44px rgba(0, 0, 0, 0.42);
+
+  --accent-bp:     #ffd166;
+  --accent-none:   #557e92;
+
+  --pill-fill:     rgba(52, 121, 154, 0.16);
+  --pill-stroke:   #34799a;
+}
+
+[data-theme="light"] {
+  --bg:            #edf7fa;
+  --grid:          #cbe2eb;
+  --text:          #123344;
+  --text-muted:    #4e7486;
+  --text-dim:      #86a6b4;
+  --text-faint:    #668c9d;
+
+  --panel:         rgba(249, 253, 255, 0.94);
+  --panel-2:       rgba(233, 245, 250, 0.7);
+  --panel-border:  #78aabd;
+  --rule:          #b8d5e1;
+
+  --chrome-bg:     rgba(247, 252, 254, 0.94);
+  --chrome-border: #8ab5c5;
+  --chrome-text:   #294f61;
+  --chrome-hover:  #ffffff;
+  --shadow:        0 12px 30px rgba(20, 60, 80, 0.12);
+
+  --accent-bp:     #a86609;
+  --accent-none:   #86a6b4;
+
+  --pill-fill:     rgba(120, 170, 189, 0.12);
+  --pill-stroke:   #8ab5c5;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--chrome-border);
+  backdrop-filter: blur(6px);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--chrome-text);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.topbar-brand .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-bp);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-bp) 25%, transparent);
+}
+
+#btn-theme {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--chrome-text);
+  background: transparent;
+  border: 1px solid var(--chrome-border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+#btn-theme:hover { background: var(--chrome-hover); }
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+header.hero h1 {
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.grid {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.card-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+}
+.card-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.card-apps {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.card-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.pill {
+  font-size: 9.5px;
+  font-family: inherit;
+  color: var(--text-dim);
+  background: var(--pill-fill);
+  border: 1px solid var(--pill-stroke);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.card-links {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.link-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+}
+.link-btn:hover {
+  background: var(--chrome-hover);
+  border-color: var(--accent-bp);
+  transform: translateX(2px);
+}
+.link-btn .tag {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.link-btn.bp .tag { background: var(--accent-bp); }
+.link-btn small {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-weight: 500;
+  font-size: 10px;
+}
+
+footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-brand"><span class="dot"></span> Panduan &amp; Blueprint PLN ES</div>
+    <button id="btn-theme" type="button">Tema</button>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <h1>Panduan &amp; Blueprint Implementasi Odoo 19 — PLN ES</h1>
+    </header>
+
+    <div class="grid">
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">00</span><span class="card-title">Panduan Umum &amp; Hak Akses</span></div>
+          <p class="card-apps">Berlaku untuk semua modul — login, navigasi layar, alur persetujuan berjenjang, pengaturan hak akses.</p>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-sti.html"><span class="tag"></span> Blueprint STI — Approval Matrix &amp; Access Studio</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">02</span><span class="card-title">Bisnis Inovatif &amp; Non-Captive</span></div>
+          <p class="card-apps">pln_bisnov, pln_bisnov_pemasaran, plnes_noncaptive</p>
+          <div class="card-pills"><span class="pill">Bisnis Inovatif</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-bisnis-inovatif-noncaptive.html"><span class="tag"></span> Blueprint Non-Captive — Pemasaran &amp; Pelayanan</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">03</span><span class="card-title">Business Development</span></div>
+          <p class="card-apps">plnes_bdev</p>
+          <div class="card-pills"><span class="pill">Business Development</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-business-development.html"><span class="tag"></span> Blueprint Business Development (BDEV)</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">04</span><span class="card-title">Pengadaan, SCM &amp; Vendor</span></div>
+          <p class="card-apps">pln_scm, pln_pengadaan, purchase_request, pln_vendor_document, pln_vendor_evaluation, pln_bank_garansi</p>
+          <div class="card-pills"><span class="pill">SCM</span><span class="pill">Pengadaan</span><span class="pill">Purchase Requests</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-logistic.html"><span class="tag"></span> Blueprint Logistik SCM — Purchase Requisition</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">06</span><span class="card-title">Anggaran, Aset &amp; Sewa</span></div>
+          <p class="card-apps">pln_account_budget, kaitech_asset_management_v19, ss_lease_accounting, account_parent</p>
+          <div class="card-pills"><span class="pill">Anggaran</span><span class="pill">Assets</span><span class="pill">Lease Management</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-anggaran.html"><span class="tag"></span> Blueprint Anggaran — SKK &amp; PRK</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">07</span><span class="card-title">HR Master &amp; Dokumen Pegawai</span></div>
+          <p class="card-apps">pln_hr_master, pln_hr_docs, pln_hr_development, pln_hr_biodata, pln_hr_ess, pln_home_api</p>
+          <div class="card-pills"><span class="pill">Employees</span><span class="pill">ESS</span><span class="pill">Integrasi PLN Home</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-employee-management.html"><span class="tag"></span> Blueprint Employee Management</a>
+            <a class="link-btn bp" href="blueprint-employee-self-service.html"><span class="tag"></span> Blueprint Employee Self Service (ESS)</a>
+            <a class="link-btn bp" href="blueprint-strategi-pengembangan-hc.html"><span class="tag"></span> Blueprint Strategi Pengembangan Human Capital</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span class="card-num">08</span><span class="card-title">Payroll &amp; SPPD</span></div>
+          <p class="card-apps">altech_payroll_indonesia, pln_payroll_es, pln_payroll_approval, pln_sppd, pln_sppd_expense</p>
+          <div class="card-pills"><span class="pill">Payroll</span><span class="pill">Employee Self Service</span></div>
+          <div class="card-links">
+            <a class="link-btn bp" href="blueprint-payroll.html"><span class="tag"></span> Blueprint Payroll (PLN ES)</a>
+          </div>
+        </article>
+
+      <article class="card">
+        <div class="card-head"><span class="card-title">Hubungan Industrial (HI)</span></div>
+        <p class="card-apps">Relasi ketenagakerjaan &amp; hubungan industrial</p>
+        <div class="card-links">
+          <a class="link-btn bp" href="blueprint-hubungan-industrial.html"><span class="tag"></span> Blueprint Hubungan Industrial (HI)</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('btn-theme');
+      function apply(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        try { localStorage.setItem('home-theme', t); } catch (_) {}
+      }
+      btn.addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        apply(current);
+      });
+    })();
+  </script>
+
+</body>
+</html>
