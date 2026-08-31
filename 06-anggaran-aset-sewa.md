@@ -59,68 +59,163 @@ Administrator), bukan grup tersendiri.
 
 ## 3. Anggaran
 
-### 3.1 SKK - dokumen anggaran
+### 3.1 Pos Anggaran dan Payung Anggaran (konfigurasi)
+
+**Menu:** Anggaran > Konfigurasi > Pos Anggaran / Payung Anggaran
+
+Pos Anggaran adalah unit kontrol pengeluaran, terkait ke satu **UP / Divisi**
+pemilik dan satu atau lebih akun GL. Setiap Pos punya tiga flag yang
+diwariskan ke baris PRK yang memakainya:
+
+| Flag | Nilai | Efek |
+|---|---|---|
+| Budget Restrict | Allow / Restrict | Restrict memblokir transaksi yang melebihi pagu |
+| Allow Transfer | Allow / Restrict | Mengizinkan/melarang Pos ini ikut Rekomposisi |
+| Budget Carry Next Month | Allow / Restrict | Menentukan boleh tidaknya sisa Pos diluncurkan |
+
+**Level Kontrol Anggaran** menentukan cara pengecekan pagu: **Per Pos
+Anggaran** (dicek di level Pos itu sendiri) atau **Payung Anggaran** (dicek
+agregat di level payung). Payung Anggaran **tidak membagi pagu secara
+otomatis** ke Pos di bawahnya - payung hanya mengagregasi pengecekan pagu
+per pasangan (Payung, SKK); bila satu Pos dalam payung habis, transaksi
+tetap diperbolehkan selama total payung pada SKK yang sama masih cukup.
+
+**Basis Konsumsi** pada Payung umumnya **PO Confirm (outstanding)** - pagu
+berkurang saat PO dikonfirmasi (dicatat sebagai komitmen outstanding),
+bukan saat Vendor Bill dibuat.
+
+### 3.2 SKK - dokumen anggaran
 
 **Menu:** Anggaran > Transaksi > SKK (Anggaran)
 **Status:** Draft -> Dikonfirmasi -> Divalidasi -> Selesai
 
+Header SKK memuat Nama Anggaran, **Nomor Kategori SKK** (SKKO Captive, SKKO
+Non-Captive, SKKI Tahun Berjalan, SKKI Luncuran, Hutang Usaha Captive,
+Hutang Usaha Non-Captive), Kategori (Investasi/Operasi), Penanggung Jawab,
+UP/Divisi, Tanggal Mulai-Selesai, dan Tahun Anggaran (otomatis dari
+Tanggal Mulai).
+
 | # | Langkah | Tombol | Catatan |
 |---|---|---|---|
-| 1 | **New** -> isi periode, pos anggaran, dan pagu tiap baris | | Pos dari Konfigurasi > Pos Anggaran |
-| 2 | Klik **Konfirmasi** | Status Dikonfirmasi | **Baru di status ini** rekomposisi dan permohonan tambah bisa dibuat |
+| 1 | **New** -> isi header lalu tambah baris **PRK** (Program Rencana Kerja) per Pos Anggaran | | Pos dari Konfigurasi > Pos Anggaran |
+| 2 | Klik **Konfirmasi** | Status Dikonfirmasi | Anggaran Awal tiap PRK terisi sesuai Penetapan; rekomposisi dan permohonan tambah bisa dibuat |
 | 3 | Klik **Validasi** lalu **Selesaikan** | Anggaran berlaku | |
 | 4 | Perlu koreksi: **Set ke Draft** | Dari Dikonfirmasi atau Dibatalkan | |
+
+**Validasi anti-duplikasi:** satu UP / Divisi hanya boleh punya satu SKK
+aktif per tahun anggaran per kategori. SKK dengan kombinasi UP, tahun, dan
+kategori yang sama dengan SKK aktif yang sudah ada akan ditolak sistem.
 
 Dari form SKK ada tombol pintas ke **Rekomposisi**, **Permohonan Tambah**, dan
 **Alokasi Payung** yang terkait.
 
-### 3.2 Rekomposisi Anggaran - menggeser pagu antar pos
+### 3.3 Baris PRK (Program Rencana Kerja)
+
+Setiap baris PRK pada SKK punya kolom berikut:
+
+| Kolom | Sumber | Keterangan |
+|---|---|---|
+| Kode PRK | Input | Kode identifikasi PRK |
+| Pos Anggaran | Input | Menentukan Payung Anggaran (otomatis) dan flag default |
+| Anggaran Awal | Otomatis | Terisi sesuai Penetapan setelah SKK dikonfirmasi |
+| Tambah Anggaran | Otomatis | Dari Permohonan Tambah yang disetujui |
+| Transfer | Otomatis | Selisih bersih Rekomposisi: negatif di baris asal, positif di baris tujuan |
+| Alokasi Payung & Luncuran | Otomatis | Dari mekanisme payung dan carry-over |
+| **Penetapan** | Computed | Pagu akhir = Anggaran Awal + Tambah Anggaran + Transfer + Alokasi Payung + Luncuran |
+
+### 3.4 Rekomposisi Anggaran - menggeser pagu antar PRK
 
 **Menu:** Anggaran > Transaksi > Rekomposisi Anggaran, atau tombol
 **Rekomposisi Anggaran** di form SKK berstatus Dikonfirmasi.
 
-Isi pos asal, pos tujuan, dan nilai yang digeser. Setiap pergeseran tercatat di
-**Pelaporan > Log Rekomposisi Anggaran** sehingga bisa ditelusuri.
+Isi PRK asal, PRK tujuan, dan nominal yang digeser (SKK asal/tujuan terisi
+otomatis karena rekomposisi selalu dalam satu SKK yang sama). Setiap
+pergeseran tercatat di **Pelaporan > Log Rekomposisi Anggaran**.
 
-### 3.3 Permohonan Tambah
+**Aturan wajib:** transfer hanya diizinkan antar Pos dalam konteks yang
+sama - sesama Pos bernaung Payung Anggaran, atau sesama Pos non-payung.
+Transfer lintas konteks (payung ke non-payung atau sebaliknya) ditolak
+sistem.
+
+### 3.5 Permohonan Tambah
 
 **Menu:** Anggaran > Transaksi > Permohonan Tambah
 **Status:** Draft -> To Approve -> Approved / Rejected
 
 | # | Langkah | Tombol | Siapa |
 |---|---|---|---|
-| 1 | **New** -> isi pos dan nilai tambahan, sertakan alasan | | Request Budget User |
+| 1 | **New** -> isi PRK dan nilai tambahan (Requested Amount), sertakan alasan | | Request Budget User |
 | 2 | Klik **Kirim untuk Approval** | Status To Approve | User |
-| 3 | Klik **Setujui** atau **Tolak** | Wizard konfirmasi | Request Budget Manager |
+| 3 | Klik **Setujui** atau **Tolak** | Wizard konfirmasi, mengisi Approved Amount | Request Budget Manager |
 
-### 3.4 Payung Anggaran dan Luncuran
+Setelah Approved, kolom **Tambah Anggaran** pada PRK terkait ter-update
+otomatis sesuai Approved Amount.
 
-Dua mekanisme yang sering tertukar:
+> Jenjang/matriks persetujuan Permohonan Tambah masih berstatus **perlu
+> konfirmasi** pada blueprint pengembangan modul ini - pastikan pengaturan
+> approval group saat ini (Request Budget Manager) sudah sesuai keputusan
+> final BPO Anggaran sebelum dijadikan acuan.
 
-| Istilah | Artinya |
+### 3.6 Payung Anggaran dan Luncuran
+
+Dua mekanisme yang sering tertukar - lihat 3.1 untuk cara kerja Payung
+Anggaran (kontrol pagu agregat, bukan pembagian otomatis).
+
+**Mapping Luncuran** (Konfigurasi > Mapping Luncuran) mengatur pemindahan
+sisa anggaran tahun berjalan ke kategori SKK tahun berikutnya:
+
+| Field | Keterangan |
 |---|---|
-| **Payung Anggaran** | Satu pagu besar yang dibagi otomatis ke beberapa pos di bawahnya |
-| **Luncuran** | Sisa anggaran tahun berjalan yang diteruskan ke tahun berikutnya |
+| Kategori SKK Asal / Tujuan | Pasangan kategori sumber dan tujuan |
+| Tanggal & Bulan Cut-Off | Batas proses luncuran, mis. 31 Desember |
+| Jumlah Luncuran | Smart button jumlah jembatan luncuran yang sudah diproses |
 
-**Payung Anggaran** disiapkan di Konfigurasi > Payung Anggaran. Hasil
-pembagiannya terlihat di **Pelaporan > Alokasi Otomatis Payung** dengan status
-**Berlaku**, **Di-reverse**, atau **Pembalik**.
+Contoh mapping: SKKO Captive -> Hutang Usaha Captive; SKKO Non-Captive ->
+Hutang Usaha Non-Captive; SKKI Tahun Berjalan -> SKKI Luncuran.
+
+Nilai yang diluncurkan = sisa komitmen PO outstanding (komitmen dikurangi
+realisasi terposting). PO yang diluncurkan **tidak dibatalkan dan tidak
+diedit** - anggarannya dibaca melalui **Jembatan Luncuran PO** (read-only,
+referensi berformat LNC/TAHUN/NOMOR), sehingga PO tetap berjalan normal di
+tahun berikutnya.
 
 **Luncuran** punya dua jalur:
 
-- **Otomatis** - diatur di Konfigurasi > Mapping Luncuran, dijalankan dengan
-  tombol **Jalankan Luncuran Sekarang**. Hasilnya di Pelaporan > Jembatan
-  Luncuran PO (status Aktif / Di-reverse).
-- **Manual** - Transaksi > Luncuran Sisa Anggaran (Manual), Draft ->
-  **Setujui** -> Approved.
+- **Otomatis** - batch harian memproses mapping aktif setiap kali tanggal
+  cut-off tercapai, tanpa intervensi pengguna.
+- **Manual** - tombol **Jalankan Luncuran Sekarang** pada form Mapping
+  Luncuran. Hasilnya di Pelaporan > Jembatan Luncuran PO (kolom Purchase
+  Order, Nomor PRK, SKK Asal, SKK Luncuran, PRK Luncuran, Nilai Luncuran,
+  Status).
 
-### 3.5 Laporan Anggaran
+> "Alokasi Otomatis Payung" (status Berlaku/Di-reverse/Pembalik) dan
+> "Luncuran Sisa Anggaran (Manual)" dengan alur Draft -> Setujui -> Approved
+> yang ada di menu saat ini tidak dirinci pada blueprint pengembangan
+> modul Anggaran (PRJ-0006) - kemungkinan diatur di dokumen terpisah
+> "Blueprint AGR-03 Monitoring & Persetujuan Anggaran". Cek dokumen itu
+> bila perlu memverifikasi perilakunya.
+
+### 3.7 Konsumsi Anggaran pada Purchase Order
+
+Setelah SKK berstatus Selesai, setiap PO wajib mencantumkan field **SKK**
+dan **PRK** agar konsumsi anggaran terpotong otomatis saat PO
+**dikonfirmasi** (bukan saat Vendor Bill dibuat). Jika Pos memakai
+mekanisme payung, transaksi tetap diperbolehkan selama total pagu payung
+masih mencukupi meski satu Pos di dalamnya sudah habis.
+
+Smart button pada form SKK:
+- **Rekomposisi** - jumlah transaksi rekomposisi, diklik untuk membuka detail transfer.
+- **Permohonan Tambahan** - jumlah permohonan tambah beserta status.
+
+### 3.8 Laporan Anggaran
 
 | Laporan | Menjawab pertanyaan |
 |---|---|
-| Analisa Serapan Anggaran | Berapa pagu terpakai dibanding rencana |
+| Analisa Serapan Anggaran / dashboard sisa anggaran per Pos & PRK | Penetapan, Realisasi, Sisa, dan Komitmen |
+| Rekap Payung Anggaran lintas SKK | Pagu, konsumsi, dan sisa agregat per payung |
 | Akun Biaya Belum Dipetakan | Akun biaya yang belum punya pos anggaran - biaya di akun ini tidak akan terhitung sebagai serapan |
 | Log Rekomposisi Anggaran | Riwayat semua pergeseran pagu |
+| Jembatan Luncuran PO | Riwayat PO yang diluncurkan ke SKK tahun berikutnya |
 
 ---
 
@@ -231,6 +326,8 @@ Tombol pintas **Journal Entries** membuka jurnal yang sudah terbentuk.
 | Gejala | Penyebab yang paling sering | Yang harus dilakukan |
 |---|---|---|
 | Tombol Rekomposisi / Permohonan Tambah tidak muncul di SKK | SKK belum berstatus Dikonfirmasi | Klik **Konfirmasi** dulu |
+| SKK tidak bisa disimpan/dikonfirmasi | Kombinasi UP, tahun anggaran, dan kategori sudah dipakai SKK aktif lain | Validasi anti-duplikasi aktif; edit SKK yang sudah ada atau ubah kombinasinya |
+| Rekomposisi ditolak sistem | Transfer melintasi Pos berpayung dan Pos non-payung | Rekomposisi hanya diizinkan sesama Pos berpayung atau sesama Pos non-payung |
 | Serapan anggaran terlihat lebih kecil dari kenyataan | Ada akun biaya yang belum dipetakan ke pos anggaran | Buka Pelaporan > **Akun Biaya Belum Dipetakan** |
 | Luncuran tidak berjalan | Mapping Luncuran belum aktif | Aktifkan mapping, lalu **Jalankan Luncuran Sekarang** |
 | Tabel penyusutan aset kosong | Belum klik **Compute Depreciation** | Jalankan saat status masih Draft |
