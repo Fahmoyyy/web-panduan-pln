@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint Modul Payroll (PLN ES) - PRJ-0006 MHC</title>
+<script>
+  (function () {
+    try {
+      var t = null;
+      try {
+        var p = new URLSearchParams(window.location.search).get('theme');
+        if (p === 'light' || p === 'dark') t = p;
+      } catch (_) {}
+      if (!t) { try { t = localStorage.getItem('bp-payroll-theme'); } catch (_) {} }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (_) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<style>
+/* ============================================================
+   BLUEPRINT PRESET - drafting palette, squared materials,
+   grid ground. Dark is the default; light is a paper variant.
+   ============================================================ */
+:root,
+[data-theme="dark"] {
+  --bg:            #06131f;
+  --grid:          #12324a;
+  --grid-strong:   #17425a;
+  --text:          #e3f6ff;
+  --text-muted:    #91b8ca;
+  --text-dim:      #557e92;
+  --text-faint:    #739caf;
+
+  --panel:         rgba(7, 27, 43, 0.9);
+  --panel-2:       rgba(10, 38, 58, 0.72);
+  --panel-border:  #27627f;
+  --rule:          #1b4a66;
+
+  --lane-fill:     rgba(10, 43, 66, 0.36);
+  --lane-stroke:   #34799a;
+  --mask:          #0a2031;
+
+  --arrow:         #78a3b7;
+  --arrow-emph:    #64dfc1;
+
+  --config-fill:   rgba(120, 105, 196, 0.16);
+  --config-stroke: #b4a8ff;
+  --engine-fill:   rgba(31, 155, 124, 0.15);
+  --engine-stroke: #69dfbd;
+  --flow-fill:     rgba(26, 157, 193, 0.16);
+  --flow-stroke:   #66d9ef;
+  --custom-fill:   rgba(207, 112, 49, 0.15);
+  --custom-stroke: #ffad66;
+  --output-fill:   rgba(197, 145, 43, 0.15);
+  --output-stroke: #ffd166;
+  --gate-fill:     rgba(199, 76, 104, 0.15);
+  --gate-stroke:   #ff8da1;
+  --ext-fill:      rgba(84, 119, 139, 0.2);
+  --ext-stroke:    #a7cad9;
+
+  --k-todev:       #ffd166;
+  --k-progress:    #66d9ef;
+  --k-odoo:        #69dfbd;
+  --k-kustom:      #b4a8ff;
+  --k-hybrid:      #ffad66;
+  --k-confirm:     #ff8da1;
+  --k-outscope:    #7d97a6;
+
+  --chrome-bg:     rgba(7, 28, 45, 0.92);
+  --chrome-border: #34799a;
+  --chrome-text:   #d8f3ff;
+  --chrome-hover:  rgba(18, 58, 83, 0.95);
+  --shadow:        0 18px 44px rgba(0, 0, 0, 0.42);
+}
+
+[data-theme="light"] {
+  --bg:            #edf7fa;
+  --grid:          #cbe2eb;
+  --grid-strong:   #b5d5e1;
+  --text:          #123344;
+  --text-muted:    #4e7486;
+  --text-dim:      #86a6b4;
+  --text-faint:    #668c9d;
+
+  --panel:         rgba(249, 253, 255, 0.94);
+  --panel-2:       rgba(233, 245, 250, 0.82);
+  --panel-border:  #78aabd;
+  --rule:          #b8d5e1;
+
+  --lane-fill:     rgba(210, 232, 240, 0.42);
+  --lane-stroke:   #83b2c4;
+  --mask:          #f9fdff;
+
+  --arrow:         #6f96a9;
+  --arrow-emph:    #0d8f76;
+
+  --config-fill:   rgba(100, 75, 180, 0.1);
+  --config-stroke: #6757a8;
+  --engine-fill:   rgba(5, 128, 101, 0.1);
+  --engine-stroke: #08755f;
+  --flow-fill:     rgba(8, 145, 178, 0.1);
+  --flow-stroke:   #087f9c;
+  --custom-fill:   rgba(190, 100, 30, 0.1);
+  --custom-stroke: #b0601c;
+  --output-fill:   rgba(181, 120, 15, 0.1);
+  --output-stroke: #a86609;
+  --gate-fill:     rgba(190, 48, 80, 0.09);
+  --gate-stroke:   #b32f50;
+  --ext-fill:      rgba(90, 120, 140, 0.11);
+  --ext-stroke:    #5d8194;
+
+  --k-todev:       #a86609;
+  --k-progress:    #087f9c;
+  --k-odoo:        #08755f;
+  --k-kustom:      #6757a8;
+  --k-hybrid:      #b0601c;
+  --k-confirm:     #b32f50;
+  --k-outscope:    #6d8896;
+
+  --chrome-bg:     rgba(255, 255, 255, 0.94);
+  --chrome-border: #8fbccd;
+  --chrome-text:   #163a4d;
+  --chrome-hover:  #ffffff;
+  --shadow:        0 14px 34px rgba(18, 51, 68, 0.14);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+
+body {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+               'DejaVu Sans Mono', 'Liberation Mono', monospace;
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 0 1.5rem 6rem;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+/* ---------- chrome ---------- */
+.toolbar {
+  position: fixed; top: 1rem; right: 1.25rem; z-index: 60;
+  display: flex; gap: .4rem;
+}
+.toolbar button {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .42rem .7rem;
+  font: inherit; font-size: .6875rem; font-weight: 600; letter-spacing: .04em;
+  color: var(--chrome-text);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-border);
+  border-radius: .2rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background .15s ease, border-color .15s ease;
+}
+.toolbar button:hover { background: var(--chrome-hover); }
+.toolbar button:focus-visible { outline: 2px solid var(--flow-stroke); outline-offset: 2px; }
+
+.container { max-width: 1460px; margin: 0 auto; }
+
+/* ---------- title block (drafting cartouche) ---------- */
+.cartouche {
+  margin: 3rem 0 2.25rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+.cartouche-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem;
+  padding: .6rem 1.15rem;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: .625rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.cartouche-top .tick {
+  width: .45rem; height: .45rem; background: var(--arrow-emph);
+  box-shadow: 0 0 10px var(--arrow-emph);
+}
+.cartouche-top .sep { color: var(--text-dim); }
+.cartouche-body { padding: 1.4rem 1.15rem 1.25rem; }
+.cartouche h1 {
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  font-weight: 800; letter-spacing: -.01em; line-height: 1.25;
+}
+.cartouche .chain {
+  margin-top: .55rem;
+  font-size: .75rem; color: var(--text-muted); line-height: 1.7;
+}
+.cartouche .chain b { color: var(--flow-stroke); font-weight: 600; }
+.meta-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  border-top: 1px solid var(--rule);
+}
+.meta-grid div {
+  padding: .7rem 1.15rem;
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.meta-grid dt {
+  font-size: .5625rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.meta-grid dd { margin-top: .2rem; font-size: .75rem; color: var(--text); }
+
+/* ---------- classification badges ---------- */
+.k {
+  display: inline-flex; align-items: center; gap: .32rem;
+  padding: .1rem .42rem;
+  font-size: .5625rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; white-space: nowrap;
+  border: 1px solid currentColor; border-radius: .15rem;
+}
+.k::before { content: ''; width: .3rem; height: .3rem; background: currentColor; }
+.k-todev    { color: var(--k-todev); }
+.k-progress { color: var(--k-progress); }
+.k-odoo     { color: var(--k-odoo); }
+.k-kustom   { color: var(--k-kustom); }
+.k-hybrid   { color: var(--k-hybrid); }
+.k-confirm  { color: var(--k-confirm); }
+.k-outscope { color: var(--k-outscope); }
+
+/* ---------- diagram ---------- */
+.plate {
+  margin: 0 0 2.5rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+.plate-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  padding: .6rem .9rem;
+  border-bottom: 1px solid var(--panel-border);
+}
+.plate-bar .label {
+  font-size: .5625rem; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--text-dim); margin-right: .35rem;
+}
+.view-chip {
+  padding: .3rem .6rem;
+  font: inherit; font-size: .625rem; font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--rule); border-radius: .15rem;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.view-chip:hover { color: var(--text); border-color: var(--panel-border); }
+.view-chip[aria-pressed="true"] {
+  color: var(--bg); background: var(--flow-stroke); border-color: var(--flow-stroke);
+}
+[data-theme="light"] .view-chip[aria-pressed="true"] { color: #fff; }
+.view-chip.reset { margin-left: auto; }
+
+.plate-stage { padding: 1rem .9rem; overflow-x: auto; }
+.plate-stage svg { display: block; width: 100%; min-width: 1040px; height: auto; }
+
+.view-note {
+  padding: .55rem .9rem;
+  border-top: 1px solid var(--rule);
+  font-size: .6875rem; color: var(--text-muted);
+}
+.view-note b { color: var(--arrow-emph); font-weight: 600; }
+
+/* svg primitives */
+svg .frame {
+  fill: none; stroke: var(--lane-stroke); stroke-width: 1; stroke-dasharray: 5 4;
+}
+svg .frame-tab { fill: var(--panel); stroke: var(--lane-stroke); stroke-width: 1; }
+svg .lane { fill: var(--lane-fill); stroke: var(--lane-stroke); stroke-width: 1; }
+svg .cap {
+  fill: var(--text-dim); font-size: 8px; font-weight: 700; letter-spacing: .14em;
+}
+svg .frame-label { fill: var(--text-faint); font-size: 8px; font-weight: 700; letter-spacing: .1em; }
+
+svg .n-mask { fill: var(--mask); }
+svg .n-box  { fill: var(--ext-fill); stroke: var(--ext-stroke); stroke-width: 1.4; }
+svg .n-title { fill: var(--text); font-size: 10.5px; font-weight: 700; }
+svg .n-sub   { fill: var(--text-muted); font-size: 8px; }
+svg .n-tag   { font-size: 7px; font-weight: 700; letter-spacing: .09em; }
+
+svg .node { cursor: pointer; }
+svg .node:focus { outline: none; }
+svg .node:focus-visible .n-box { stroke-width: 2.4; }
+svg .node:hover .n-box { stroke-width: 2.2; }
+
+svg .node[data-kind="config"] .n-box { fill: var(--config-fill); stroke: var(--config-stroke); }
+svg .node[data-kind="engine"] .n-box { fill: var(--engine-fill); stroke: var(--engine-stroke); }
+svg .node[data-kind="flow"]   .n-box { fill: var(--flow-fill);   stroke: var(--flow-stroke); }
+svg .node[data-kind="custom"] .n-box { fill: var(--custom-fill); stroke: var(--custom-stroke); }
+svg .node[data-kind="output"] .n-box { fill: var(--output-fill); stroke: var(--output-stroke); }
+svg .node[data-kind="gate"]   .n-box { fill: var(--gate-fill);   stroke: var(--gate-stroke); }
+svg .node[data-kind="ext"]    .n-box { fill: var(--ext-fill);    stroke: var(--ext-stroke); }
+
+svg .node[data-klas="TO DEVELOP"]      .n-tag { fill: var(--k-todev); }
+svg .node[data-klas="IN PROGRESS"]     .n-tag { fill: var(--k-progress); }
+svg .node[data-klas="BAWAAN ODOO"]     .n-tag { fill: var(--k-odoo); }
+svg .node[data-klas="KUSTOMISASI"]     .n-tag { fill: var(--k-kustom); }
+svg .node[data-klas="HYBRID"]          .n-tag { fill: var(--k-hybrid); }
+svg .node[data-klas="PERLU KONFIRMASI"].n-tag { fill: var(--k-confirm); }
+svg .node[data-klas="DI LUAR CAKUPAN"] .n-tag { fill: var(--k-outscope); }
+
+svg .e        { fill: none; stroke: var(--arrow); stroke-width: 1.3; }
+svg .e-emph   { fill: none; stroke: var(--arrow-emph); stroke-width: 1.8; }
+svg .e-dash   { fill: none; stroke: var(--arrow); stroke-width: 1.2; stroke-dasharray: 4 3; }
+svg .e-gate   { fill: none; stroke: var(--gate-stroke); stroke-width: 1.5; }
+svg .e-label  { fill: var(--text-dim); font-size: 7px; letter-spacing: .02em; }
+svg .m-def  { fill: var(--arrow); }
+svg .m-emph { fill: var(--arrow-emph); }
+svg .m-gate { fill: var(--gate-stroke); }
+
+svg .note-box { fill: none; stroke: var(--lane-stroke); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .note-head { fill: var(--text-faint); font-size: 7.5px; font-weight: 700; letter-spacing: .12em; }
+svg .note-line { fill: var(--text-muted); font-size: 8px; }
+
+/* dimming when a view or node is focused */
+svg[data-focused] .node:not([data-on]) { opacity: .2; }
+svg[data-focused] .e:not([data-on]),
+svg[data-focused] .e-emph:not([data-on]),
+svg[data-focused] .e-dash:not([data-on]),
+svg[data-focused] .e-gate:not([data-on]),
+svg[data-focused] .e-label:not([data-on]) { opacity: .12; }
+svg[data-focused] .lane:not([data-on]) { opacity: .25; }
+svg .node, svg .e, svg .e-emph, svg .e-dash, svg .e-gate, svg .e-label, svg .lane {
+  transition: opacity .2s ease;
+}
+
+/* ---------- node detail panel ---------- */
+.detail {
+  border-top: 1px solid var(--panel-border);
+  padding: 1.1rem 1.15rem 1.25rem;
+  background: var(--panel-2);
+}
+.detail[hidden] { display: none; }
+.detail-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .55rem;
+  padding-bottom: .6rem; margin-bottom: .8rem;
+  border-bottom: 1px solid var(--rule);
+}
+.detail-head h3 { font-size: .9375rem; font-weight: 700; }
+.detail-head .where {
+  margin-left: auto;
+  font-size: .5625rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.detail p { font-size: .78125rem; color: var(--text-muted); max-width: 86ch; }
+.detail p + p { margin-top: .55rem; }
+.detail p strong, .detail li strong { color: var(--text); font-weight: 600; }
+.detail code {
+  font-family: inherit; font-size: .95em; padding: .03rem .25rem;
+  color: var(--flow-stroke); background: var(--panel);
+  border: 1px solid var(--rule); border-radius: .12rem;
+}
+
+/* two-column body: prose on the left, spec list on the right */
+.detail-cols {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 1.1rem 1.75rem; align-items: start;
+}
+@media (max-width: 900px) { .detail-cols { grid-template-columns: 1fr; gap: 1rem; } }
+
+.detail-list { border-top: 1px solid var(--rule); }
+.detail-list .lh {
+  padding: .45rem 0 .35rem;
+  font-size: .5625rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.detail-list ul { list-style: none; }
+.detail-list li {
+  display: flex; gap: .5rem;
+  padding: .32rem 0; border-top: 1px solid var(--rule);
+  font-size: .75rem; color: var(--text-muted);
+}
+.detail-list li::before { content: '\25AA'; color: var(--flow-stroke); flex: none; }
+
+.detail-meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: .5rem .9rem; margin-top: .9rem;
+  padding-top: .7rem; border-top: 1px solid var(--rule);
+}
+.detail-meta dt {
+  font-size: .5625rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.detail-meta dd { margin-top: .12rem; font-size: .71875rem; color: var(--text-muted); }
+
+.detail .field-note {
+  margin-top: .9rem; padding: .6rem .8rem;
+  border-left: 2px solid var(--custom-stroke); background: var(--panel);
+  font-size: .71875rem; color: var(--text-muted); max-width: 100ch;
+}
+.detail .field-note b { color: var(--custom-stroke); font-weight: 700; }
+.detail .gap-note { border-left-color: var(--gate-stroke); }
+.detail .gap-note b { color: var(--gate-stroke); }
+
+footer {
+  margin-top: 1.75rem; padding-top: .9rem;
+  border-top: 1px solid var(--rule);
+  font-size: .6875rem; color: var(--text-dim);
+  display: flex; flex-wrap: wrap; gap: .5rem 1rem; justify-content: space-between;
+}
+
+@media print {
+  body { background: #fff; background-image: none; color: #000; padding: 0; }
+  .toolbar, .plate-bar { display: none; }
+  .plate-stage svg { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<div class="toolbar" role="toolbar" aria-label="Aksi dokumen">
+  <button id="btn-theme" type="button" aria-pressed="false" title="Ganti tema (T)">
+    <span id="theme-label">Dark</span>
+  </button>
+  <button id="btn-print" type="button" title="Cetak / simpan PDF (P)">Cetak</button>
+</div>
+
+<div class="container">
+
+  <!-- ================= CARTOUCHE ================= -->
+  <div class="cartouche">
+    <div class="cartouche-top">
+      <span class="tick"></span>
+      <span>Blueprint / Rev 1.0</span>
+      <span class="sep">/</span>
+      <span>PRJ-0006</span>
+      <span class="sep">/</span>
+      <span>Kaitech.io &times; PLN ES</span>
+      <span class="sep">/</span>
+      <span>Kerangka pengembangan</span>
+    </div>
+    <div class="cartouche-body">
+      <h1>Modul Payroll (Penggajian) &mdash; PT PLN Electricity Services</h1>
+      <p class="chain">
+        <b>Konfigurasi &amp; Salary Rules</b> &rarr; <b>Data Pegawai Payroll</b> &rarr;
+        <b>Input Extras</b> &rarr; <b>Work Entries</b> &rarr; <b>Alur Slip Gaji</b> &rarr;
+        <b>PPh21 / BPJS / DPLK</b> &rarr; <b>Reporting &amp; Output</b>
+      </p>
+    </div>
+    <dl class="meta-grid">
+      <div><dt>Program</dt><dd>Implementasi Odoo 19 &mdash; PT PLN Electricity Services</dd></div>
+      <div><dt>Domain / sub-domain</dt><dd>MHC (Human Capital) &mdash; Payroll</dd></div>
+      <div><dt>Penyusun</dt><dd>PT Kai Teknologi Aplikatif (Kaitech.io)</dd></div>
+      <div><dt>Ditujukan kepada</dt><dd>BPO MHC / Tim Payroll PLN ES</dd></div>
+      <div><dt>Status dokumen</dt><dd>Kerangka pengembangan &mdash; IN PROGRESS / TO DEVELOP menuju UAT</dd></div>
+      <div><dt>Kick off program</dt><dd>15 Juni 2026</dd></div>
+      <div><dt>Sistem siap (target)</dt><dd>3 Agustus 2026 &mdash; UAT &amp; simulasi data</dd></div>
+      <div><dt>Go-live MHC</dt><dd>September 2026</dd></div>
+      <div><dt>Sumber spesifikasi</dt><dd>Manual Book Payroll; Salary Rule PLNMHC; FGD 24 Jul; Checkpoint 9 &amp; 30 Jul 2026</dd></div>
+      <div><dt>Panduan operasional</dt><dd>Buku 08 &mdash; Payroll dan SPPD</dd></div>
+    </dl>
+  </div>
+
+  <main>
+
+
+      <!-- ================= PLATE 01 : DIAGRAM ================= -->
+      <div class="plate" id="plate">
+        <div class="plate-bar">
+          <span class="label">Plate 01 &mdash; Arsitektur fungsional</span>
+          <button class="view-chip" type="button" data-view="spine" aria-pressed="false">Jalur utama</button>
+          <button class="view-chip" type="button" data-view="gate" aria-pressed="false">Gerbang persetujuan</button>
+          <button class="view-chip" type="button" data-view="tarif" aria-pressed="false">Sumber tarif</button>
+          <button class="view-chip" type="button" data-view="batas" aria-pressed="false">Batas sistem</button>
+          <button class="view-chip" type="button" data-view="belum" aria-pressed="false">Belum dikunci</button>
+          <button class="view-chip reset" type="button" id="btn-reset">Tampilkan semua</button>
+        </div>
+
+        <div class="plate-stage">
+          <svg id="diagram" viewBox="0 0 1400 560" role="img"
+               aria-labelledby="dg-title dg-desc">
+            <title id="dg-title">Arsitektur fungsional modul Payroll PLN ES</title>
+            <desc id="dg-desc">Sumber luar memasok master pegawai, SPPD, dan kehadiran; master dan input mengisi mesin Salary Rules; Pay Run melewati rantai persetujuan LV1 sampai LV4 sebelum Compute Sheet; slip gaji menghasilkan jurnal dan output yang diekspor ke Cortex, BPJS, bank, dan SAP.</desc>
+
+            <defs>
+              <marker id="ah" markerWidth="9" markerHeight="6.5" refX="8.4" refY="3.25" orient="auto">
+                <polygon points="0 0, 9 3.25, 0 6.5" class="m-def"/>
+              </marker>
+              <marker id="ah-e" markerWidth="9" markerHeight="6.5" refX="8.4" refY="3.25" orient="auto">
+                <polygon points="0 0, 9 3.25, 0 6.5" class="m-emph"/>
+              </marker>
+              <marker id="ah-g" markerWidth="9" markerHeight="6.5" refX="8.4" refY="3.25" orient="auto">
+                <polygon points="0 0, 9 3.25, 0 6.5" class="m-gate"/>
+              </marker>
+            </defs>
+
+            <!-- column captions -->
+            <text class="cap" x="108"  y="30" text-anchor="middle">SUMBER LUAR</text>
+            <text class="cap" x="352"  y="30" text-anchor="middle">MASTER &amp; INPUT</text>
+            <text class="cap" x="596"  y="30" text-anchor="middle">MESIN PERHITUNGAN</text>
+            <text class="cap" x="840"  y="30" text-anchor="middle">SLIP GAJI</text>
+            <text class="cap" x="1084" y="30" text-anchor="middle">OUTPUT &amp; JURNAL</text>
+            <text class="cap" x="1292" y="30" text-anchor="middle">BATAS SISTEM</text>
+
+            <!-- module boundary -->
+            <rect class="frame" x="252" y="52" width="932" height="478"/>
+            <rect class="frame-tab" x="252" y="42" width="252" height="20"/>
+            <text class="frame-label" x="262" y="56">MODUL PAYROLL &mdash; pln_payroll_es</text>
+
+            <!-- target-system lane -->
+            <g id="lane-target">
+              <rect class="lane" x="1208" y="180" width="168" height="290"/>
+              <text class="frame-label" x="1292" y="202" text-anchor="middle">SISTEM TUJUAN</text>
+            </g>
+
+            <!-- ---------- edges ---------- -->
+            <path class="e-dash" data-from="emp_mgmt" data-to="data_pegawai" d="M 192 305 L 262 305" marker-end="url(#ah)"/>
+            <path class="e-dash" data-from="pln_home" data-to="input_extras" d="M 192 397 L 262 397" marker-end="url(#ah)"/>
+            <path class="e" data-from="attendance" data-to="work_entries" d="M 192 489 L 262 489" marker-end="url(#ah)"/>
+
+            <path class="e-dash" data-from="konfig_pln" data-to="salary_rules" d="M 436 121 L 448 121 Q 456 121 456 129 L 456 276 Q 456 284 464 284 L 506 284" marker-end="url(#ah)"/>
+            <path class="e-dash" data-from="other_config" data-to="salary_rules" d="M 436 213 L 462 213 Q 470 213 470 221 L 470 286 Q 470 294 478 294 L 506 294" marker-end="url(#ah)"/>
+            <path class="e-emph" data-from="data_pegawai" data-to="salary_rules" d="M 436 305 L 506 305" marker-end="url(#ah-e)"/>
+            <path class="e" data-from="input_extras" data-to="salary_rules" d="M 436 397 L 462 397 Q 470 397 470 389 L 470 324 Q 470 316 478 316 L 506 316" marker-end="url(#ah)"/>
+            <path class="e" data-from="work_entries" data-to="salary_rules" d="M 436 489 L 448 489 Q 456 489 456 481 L 456 334 Q 456 326 464 326 L 506 326" marker-end="url(#ah)"/>
+            <path class="e" data-from="pinjaman" data-to="salary_rules" d="M 596 456 L 596 344" marker-end="url(#ah)"/>
+
+            <path class="e" data-from="pay_run" data-to="approval" d="M 596 154 L 596 174" marker-end="url(#ah)"/>
+            <path class="e-gate" data-from="approval" data-to="salary_rules" d="M 596 246 L 596 266" marker-end="url(#ah-g)"/>
+
+            <path class="e-emph" data-from="salary_rules" data-to="slip" d="M 680 305 L 750 305" marker-end="url(#ah-e)"/>
+            <path class="e-emph" data-from="pph21" data-to="slip" d="M 840 154 L 840 266" marker-end="url(#ah-e)"/>
+            <path class="e" data-from="slip" data-to="jurnal" d="M 924 290 L 954 290 Q 962 290 962 282 L 962 129 Q 962 121 970 121 L 994 121" marker-end="url(#ah)"/>
+            <path class="e" data-from="jurnal" data-to="reporting" d="M 1084 154 L 1084 266" marker-end="url(#ah)"/>
+            <path class="e-emph" data-from="slip" data-to="reporting" d="M 924 305 L 994 305" marker-end="url(#ah-e)"/>
+            <path class="e-emph" data-from="reporting" data-to="lane" d="M 1168 305 L 1202 305" marker-end="url(#ah-e)"/>
+
+            <!-- edge labels -->
+            <text class="e-label" data-from="emp_mgmt" data-to="data_pegawai" x="227" y="299" text-anchor="middle">master pegawai</text>
+            <text class="e-label" data-from="pln_home" data-to="input_extras" x="227" y="391" text-anchor="middle">dokumen SPPD</text>
+            <text class="e-label" data-from="attendance" data-to="work_entries" x="227" y="483" text-anchor="middle">hari &amp; jam kerja</text>
+            <text class="e-label" data-from="data_pegawai" data-to="salary_rules" x="471" y="299" text-anchor="middle">atribut tarif</text>
+            <text class="e-label" data-from="pay_run" data-to="approval" x="604" y="170">rantai mulai otomatis</text>
+            <text class="e-label" data-from="approval" data-to="salary_rules" x="604" y="262">Compute Sheet &mdash; LV1</text>
+            <text class="e-label" data-from="pinjaman" data-to="salary_rules" x="604" y="404">POTONGAN_LOAN</text>
+            <text class="e-label" data-from="salary_rules" data-to="slip" x="715" y="299" text-anchor="middle">komponen slip</text>
+            <text class="e-label" data-from="pph21" data-to="slip" x="848" y="215">PPH21_BULANAN</text>
+            <text class="e-label" data-from="jurnal" data-to="reporting" x="1092" y="215">saat Validate</text>
+            <text class="e-label" data-from="slip" data-to="reporting" x="959" y="322" text-anchor="middle">slip final</text>
+
+            <!-- ---------- nodes ---------- -->
+            <g class="node" data-node="emp_mgmt" data-kind="ext" data-klas="DI LUAR CAKUPAN" tabindex="0" role="button" aria-label="Employee Management">
+              <title>Employee Management &middot; master pegawai &middot; di luar modul Payroll</title>
+              <rect class="n-mask" x="24" y="272" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="24" y="272" width="168" height="66" rx="3"/>
+              <text class="n-title" x="108" y="299" text-anchor="middle">Employee Management</text>
+              <text class="n-sub"   x="108" y="314" text-anchor="middle">POG, jabatan, kota, agama</text>
+              <text class="n-tag"   x="108" y="328" text-anchor="middle">MODUL LAIN</text>
+            </g>
+
+            <g class="node" data-node="pln_home" data-kind="ext" data-klas="PERLU KONFIRMASI" tabindex="0" role="button" aria-label="PLN Home HXMS">
+              <title>PLN Home / HXMS &middot; sumber dokumen SPPD &middot; perlu konfirmasi</title>
+              <rect class="n-mask" x="24" y="364" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="24" y="364" width="168" height="66" rx="3"/>
+              <text class="n-title" x="108" y="391" text-anchor="middle">PLN Home / HXMS</text>
+              <text class="n-sub"   x="108" y="406" text-anchor="middle">SPPD dibuat di luar Odoo</text>
+              <text class="n-tag"   x="108" y="420" text-anchor="middle">PERLU KONFIRMASI</text>
+            </g>
+
+            <g class="node" data-node="attendance" data-kind="ext" data-klas="BAWAAN ODOO" tabindex="0" role="button" aria-label="Attendance Time Off">
+              <title>Attendance / Time Off &middot; sumber Work Entries &middot; bawaan Odoo</title>
+              <rect class="n-mask" x="24" y="456" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="24" y="456" width="168" height="66" rx="3"/>
+              <text class="n-title" x="108" y="483" text-anchor="middle">Attendance / Time Off</text>
+              <text class="n-sub"   x="108" y="498" text-anchor="middle">kehadiran &amp; cuti</text>
+              <text class="n-tag"   x="108" y="512" text-anchor="middle">BAWAAN ODOO</text>
+            </g>
+
+            <g class="node" data-node="konfig_pln" data-kind="config" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Konfigurasi PLN ES">
+              <title>Konfigurasi PLN ES &middot; 7 tabel tarif &middot; kustomisasi</title>
+              <rect class="n-mask" x="268" y="88" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="268" y="88" width="168" height="66" rx="3"/>
+              <text class="n-title" x="352" y="115" text-anchor="middle">Konfigurasi PLN ES</text>
+              <text class="n-sub"   x="352" y="130" text-anchor="middle">tabel tarif P1 &ndash; P23, kota</text>
+              <text class="n-tag"   x="352" y="144" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="other_config" data-kind="config" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Other Configuration">
+              <title>Other Configuration &middot; batas &amp; tarif pajak/iuran &middot; kustomisasi</title>
+              <rect class="n-mask" x="268" y="180" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="268" y="180" width="168" height="66" rx="3"/>
+              <text class="n-title" x="352" y="207" text-anchor="middle">Other Configuration</text>
+              <text class="n-sub"   x="352" y="222" text-anchor="middle">PTKP, TER, BPJS, Cutoff</text>
+              <text class="n-tag"   x="352" y="236" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="data_pegawai" data-kind="flow" data-klas="HYBRID" tabindex="0" role="button" aria-label="Data Pegawai Payroll">
+              <title>Data pegawai payroll &amp; Payroll/Tax Info &middot; hybrid</title>
+              <rect class="n-mask" x="268" y="272" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="268" y="272" width="168" height="66" rx="3"/>
+              <text class="n-title" x="352" y="299" text-anchor="middle">Data Pegawai Payroll</text>
+              <text class="n-sub"   x="352" y="314" text-anchor="middle">POG, Class, Kota, PTKP</text>
+              <text class="n-tag"   x="352" y="328" text-anchor="middle">HYBRID</text>
+            </g>
+
+            <g class="node" data-node="input_extras" data-kind="custom" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Input Extras">
+              <title>Input Extras &middot; income adjustment, rutin, deduction &middot; kustomisasi</title>
+              <rect class="n-mask" x="268" y="364" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="268" y="364" width="168" height="66" rx="3"/>
+              <text class="n-title" x="352" y="391" text-anchor="middle">Input Extras</text>
+              <text class="n-sub"   x="352" y="406" text-anchor="middle">adjustment, rutin, potongan</text>
+              <text class="n-tag"   x="352" y="420" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="work_entries" data-kind="flow" data-klas="BAWAAN ODOO" tabindex="0" role="button" aria-label="Work Entries">
+              <title>Work Entries &middot; hari kerja &amp; cuti &middot; bawaan Odoo</title>
+              <rect class="n-mask" x="268" y="456" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="268" y="456" width="168" height="66" rx="3"/>
+              <text class="n-title" x="352" y="483" text-anchor="middle">Work Entries</text>
+              <text class="n-sub"   x="352" y="498" text-anchor="middle">hari kerja &amp; cuti</text>
+              <text class="n-tag"   x="352" y="512" text-anchor="middle">BAWAAN ODOO</text>
+            </g>
+
+            <g class="node" data-node="pay_run" data-kind="flow" data-klas="BAWAAN ODOO" tabindex="0" role="button" aria-label="Pay Run">
+              <title>Pay Run (batch) &middot; Cutoff, Structure, pilih pegawai &middot; bawaan Odoo</title>
+              <rect class="n-mask" x="512" y="88" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="512" y="88" width="168" height="66" rx="3"/>
+              <text class="n-title" x="596" y="115" text-anchor="middle">Pay Run (batch)</text>
+              <text class="n-sub"   x="596" y="130" text-anchor="middle">Cutoff, Structure, pegawai</text>
+              <text class="n-tag"   x="596" y="144" text-anchor="middle">BAWAAN ODOO</text>
+            </g>
+
+            <g class="node" data-node="approval" data-kind="gate" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Rantai Persetujuan">
+              <title>Rantai persetujuan Pay Run &middot; LV1 sampai LV4 &middot; kustomisasi</title>
+              <rect class="n-mask" x="512" y="180" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="512" y="180" width="168" height="66" rx="3"/>
+              <text class="n-title" x="596" y="207" text-anchor="middle">Rantai Persetujuan</text>
+              <text class="n-sub"   x="596" y="222" text-anchor="middle">LV1 &rarr; LV2 &rarr; LV3 &rarr; LV4</text>
+              <text class="n-tag"   x="596" y="236" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="salary_rules" data-kind="engine" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Salary Rules dan Structure">
+              <title>Salary Rules &amp; Salary Structure &middot; mesin perhitungan &middot; kustomisasi</title>
+              <rect class="n-mask" x="512" y="272" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="512" y="272" width="168" height="66" rx="3"/>
+              <text class="n-title" x="596" y="299" text-anchor="middle">Salary Rules</text>
+              <text class="n-sub"   x="596" y="314" text-anchor="middle">mesin komponen P1 &ndash; P23</text>
+              <text class="n-tag"   x="596" y="328" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="pinjaman" data-kind="custom" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Pinjaman dan Potongan">
+              <title>Pinjaman &amp; potongan per pegawai &middot; kustomisasi</title>
+              <rect class="n-mask" x="512" y="456" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="512" y="456" width="168" height="66" rx="3"/>
+              <text class="n-title" x="596" y="483" text-anchor="middle">Pinjaman &amp; Potongan</text>
+              <text class="n-sub"   x="596" y="498" text-anchor="middle">Loan, Lazis, serikat, BPRP</text>
+              <text class="n-tag"   x="596" y="512" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="pph21" data-kind="engine" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="PPh21 TER dan Pasal 17">
+              <title>Perhitungan PPh21 TER bulanan &amp; rekonsiliasi Pasal 17 &middot; kustomisasi</title>
+              <rect class="n-mask" x="756" y="88" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="756" y="88" width="168" height="66" rx="3"/>
+              <text class="n-title" x="840" y="115" text-anchor="middle">PPh21 TER &amp; Ps. 17</text>
+              <text class="n-sub"   x="840" y="130" text-anchor="middle">PMK 168/2023, gross-up</text>
+              <text class="n-tag"   x="840" y="144" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="slip" data-kind="flow" data-klas="BAWAAN ODOO" tabindex="0" role="button" aria-label="Slip Gaji">
+              <title>Slip gaji &middot; Draft, Validated, Paid &middot; bawaan Odoo</title>
+              <rect class="n-mask" x="756" y="272" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="756" y="272" width="168" height="66" rx="3"/>
+              <text class="n-title" x="840" y="299" text-anchor="middle">Slip Gaji</text>
+              <text class="n-sub"   x="840" y="314" text-anchor="middle">Draft &rarr; Validated &rarr; Paid</text>
+              <text class="n-tag"   x="840" y="328" text-anchor="middle">BAWAAN ODOO</text>
+            </g>
+
+            <g class="node" data-node="jurnal" data-kind="config" data-klas="TO DEVELOP" tabindex="0" role="button" aria-label="Jurnal COA dan Cost Center">
+              <title>Jurnal COA &amp; cost center &middot; to develop</title>
+              <rect class="n-mask" x="1000" y="88" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="1000" y="88" width="168" height="66" rx="3"/>
+              <text class="n-title" x="1084" y="115" text-anchor="middle">Jurnal COA</text>
+              <text class="n-sub"   x="1084" y="130" text-anchor="middle">cost center &amp; analitik</text>
+              <text class="n-tag"   x="1084" y="144" text-anchor="middle">TO DEVELOP</text>
+            </g>
+
+            <g class="node" data-node="reporting" data-kind="output" data-klas="HYBRID" tabindex="0" role="button" aria-label="Reporting dan Output">
+              <title>Reporting, output &amp; jurnal &middot; hybrid</title>
+              <rect class="n-mask" x="1000" y="272" width="168" height="66" rx="3"/>
+              <rect class="n-box"  x="1000" y="272" width="168" height="66" rx="3"/>
+              <text class="n-title" x="1084" y="299" text-anchor="middle">Reporting &amp; Output</text>
+              <text class="n-sub"   x="1084" y="314" text-anchor="middle">1721, BPJS, transfer bank</text>
+              <text class="n-tag"   x="1084" y="328" text-anchor="middle">HYBRID</text>
+            </g>
+
+            <!-- target chips -->
+            <g class="node" data-node="cortex" data-kind="ext" data-lane="1" data-klas="DI LUAR CAKUPAN" tabindex="0" role="button" aria-label="Cortex">
+              <title>Cortex &middot; pelaporan pajak final &middot; di luar cakupan</title>
+              <rect class="n-mask" x="1218" y="214" width="148" height="42" rx="3"/>
+              <rect class="n-box"  x="1218" y="214" width="148" height="42" rx="3"/>
+              <text class="n-title" x="1292" y="232" text-anchor="middle" font-size="9">Cortex (pajak)</text>
+              <text class="n-tag"   x="1292" y="246" text-anchor="middle" font-size="6.5">DI LUAR CAKUPAN</text>
+            </g>
+            <g class="node" data-node="bpjs" data-kind="ext" data-lane="1" data-klas="HYBRID" tabindex="0" role="button" aria-label="BPJS">
+              <title>BPJS &middot; export rekap peserta &amp; iuran &middot; hybrid</title>
+              <rect class="n-mask" x="1218" y="266" width="148" height="42" rx="3"/>
+              <rect class="n-box"  x="1218" y="266" width="148" height="42" rx="3"/>
+              <text class="n-title" x="1292" y="284" text-anchor="middle" font-size="9">BPJS</text>
+              <text class="n-tag"   x="1292" y="298" text-anchor="middle" font-size="6.5">HYBRID / EXPORT</text>
+            </g>
+            <g class="node" data-node="bank" data-kind="ext" data-lane="1" data-klas="HYBRID" tabindex="0" role="button" aria-label="Bank Perbendaharaan">
+              <title>Bank / Perbendaharaan &middot; file transfer gaji &middot; hybrid</title>
+              <rect class="n-mask" x="1218" y="318" width="148" height="42" rx="3"/>
+              <rect class="n-box"  x="1218" y="318" width="148" height="42" rx="3"/>
+              <text class="n-title" x="1292" y="336" text-anchor="middle" font-size="9">Bank / Perbendaharaan</text>
+              <text class="n-tag"   x="1292" y="350" text-anchor="middle" font-size="6.5">HYBRID / EXPORT</text>
+            </g>
+            <g class="node" data-node="sap" data-kind="ext" data-lane="1" data-klas="HYBRID" tabindex="0" role="button" aria-label="SAP">
+              <title>SAP &middot; jurnal &amp; posting beban gaji &middot; hybrid</title>
+              <rect class="n-mask" x="1218" y="370" width="148" height="42" rx="3"/>
+              <rect class="n-box"  x="1218" y="370" width="148" height="42" rx="3"/>
+              <text class="n-title" x="1292" y="388" text-anchor="middle" font-size="9">SAP</text>
+              <text class="n-tag"   x="1292" y="402" text-anchor="middle" font-size="6.5">HYBRID / VIA N8N</text>
+            </g>
+            <g class="node" data-node="ssot" data-kind="ext" data-lane="1" data-klas="PERLU KONFIRMASI" tabindex="0" role="button" aria-label="SSOT PLN Pusat">
+              <title>SSOT PLN Pusat &middot; arah push/pull master organisasi &middot; perlu konfirmasi</title>
+              <rect class="n-mask" x="1218" y="422" width="148" height="42" rx="3"/>
+              <rect class="n-box"  x="1218" y="422" width="148" height="42" rx="3"/>
+              <text class="n-title" x="1292" y="440" text-anchor="middle" font-size="9">SSOT PLN Pusat</text>
+              <text class="n-tag"   x="1292" y="454" text-anchor="middle" font-size="6.5">PERLU KONFIRMASI</text>
+            </g>
+
+            <!-- field note -->
+            <g id="note-lapangan">
+              <rect class="note-box" x="756" y="396" width="412" height="118"/>
+              <text class="note-head" x="768" y="416">CATATAN LAPANGAN &mdash; BUKU 08 &sect;2</text>
+              <text class="note-line" x="768" y="436">&bull; Tidak ada tombol Submit &mdash; rantai mulai saat Pay Run dibuat LV1.</text>
+              <text class="note-line" x="768" y="454">&bull; Approve / Tolak hanya ada di tampilan kanban, bukan di form.</text>
+              <text class="note-line" x="768" y="472">&bull; Compute Sheet hanya bisa dijalankan LV1, setelah LV4 menyetujui.</text>
+              <text class="note-line" x="768" y="490">&bull; Payslip tak bisa divalidasi bila Pay Run induk belum disetujui.</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="view-note" id="view-note">
+          Klik salah satu kotak untuk membuka spesifikasinya, atau pilih satu sudut pandang di atas.
+        </div>
+
+        <div class="detail" id="detail" hidden></div>
+
+      </div>
+      <footer>
+        <span>PRJ-0006 &nbsp;|&nbsp; MHC &mdash; Payroll &nbsp;|&nbsp; KAITECH &times; PLN ES</span>
+        <span>Sumber: Blueprint-Payroll.pdf &amp; <a href="08-payroll-dan-sppd.md">Buku 08 &mdash; Payroll dan SPPD</a></span>
+      </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var btnTheme = document.getElementById('btn-theme');
+  var lblTheme = document.getElementById('theme-label');
+
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    lblTheme.textContent = t === 'light' ? 'Light' : 'Dark';
+    btnTheme.setAttribute('aria-pressed', t === 'light' ? 'true' : 'false');
+    try { localStorage.setItem('bp-payroll-theme', t); } catch (_) {}
+  }
+  applyTheme(root.getAttribute('data-theme') || 'dark');
+  btnTheme.addEventListener('click', function () {
+    applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+  });
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+  /* ---------- node specifications ----------
+     body   : paragraf uraian
+     list   : butir spesifikasi (kolom kanan)
+     meta   : pasangan label/nilai
+     note   : catatan lapangan dari Buku 08
+     gap    : hal yang belum dikunci / perlu konfirmasi          */
+  var SPEC = {
+
+    emp_mgmt: {
+      title: 'Employee Management', klas: 'DI LUAR CAKUPAN', where: 'Modul lain &middot; Blueprint bagian 5 &amp; 12',
+      body: [
+        'Modul Payroll tidak menyimpan master pegawainya sendiri &mdash; ia berbagi record dengan modul Employee Management dan hanya menambahkan tab khusus penggajian dan pajak di atasnya. Karena itu seluruh akurasi payroll bergantung pada kebersihan data yang dikelola di luar batas modul ini.',
+        'Atribut yang ditarik ke perhitungan adalah POG Grade, jabatan, kota penugasan, agama, tanggal pengangkatan, dan status keluarga (PTKP). Empat yang pertama menjadi kunci pencarian tarif; agama dan tanggal pengangkatan menjadi pemicu komponen irreguler seperti THR, insentif cuti, dan winduan.'
+      ],
+      list: [
+        'Wajib cleansing riwayat jabatan, golongan, dan status aktif sebelum import massal.',
+        'Mutasi di-tag khusus agar bisa di-backdate saat rekonsiliasi.',
+        'Sumber kebenaran master organik (sheet atau snapshot) belum ditetapkan.',
+        'Arah SSOT terhadap PLN Pusat (push atau pull) masih terbuka.'
+      ],
+      meta: [['Pemilik data', 'Tim HR / Data Owner'], ['Peran', 'Prasyarat kritis'], ['Register', 'MHC-P03 (Hybrid)']],
+      note: 'Finalisasi master pegawai adalah jalur kritis timeline. Keterlambatan di titik ini langsung menggeser UAT dan go-live MHC September 2026.',
+      gap: 'Import massal tertunda dan perhitungan tidak akurat selama cleansing POG, jabatan, kota, dan status belum tuntas.'
+    },
+
+    pln_home: {
+      title: 'PLN Home / HXMS', klas: 'PERLU KONFIRMASI', where: 'Sumber luar &middot; Blueprint bagian 13',
+      body: [
+        'Dokumen SPPD tidak dibuat di Odoo. SPPD lahir di aplikasi PLN Home lalu masuk lewat integrasi. Di Odoo, SPPD dipakai untuk dua hal saja: melihat datanya, dan mengubah biayanya menjadi komponen penghasilan pada payroll.',
+        'Isi dokumen yang dibawa: nomor, perihal, tujuan dan dasar perjalanan, jenis SPPD, beban anggaran/SKKO, tanggal berangkat dan pulang, kota berangkat dan tujuan beserta kota tarifnya, daftar peserta, dan total biaya. Kolom Status di HOME menampilkan status dokumen di aplikasi asalnya.'
+      ],
+      list: [
+        'Master Tipe Input mendaftar jenis input SPPD yang dikenali.',
+        'Pemetaan Biaya SPPD menentukan biaya jenis apa masuk ke komponen penghasilan mana.',
+        'Biaya yang sudah dipetakan muncul sebagai Income Adjustment pada periode berjalan.',
+        'Basis pemajakan cash basis &mdash; hanya yang berstatus dibayarkan yang ditarik.'
+      ],
+      meta: [['Menu di Odoo', 'Employee Self Service &rarr; SPPD'], ['Modul', 'pln_sppd, pln_sppd_payroll'], ['Arah data', 'Home &rarr; Odoo (satu arah)']],
+      note: 'Bila SPPD tidak muncul di Odoo, dokumennya memang dibuat di PLN Home &mdash; periksa Log Kiriman di Integrasi PLN Home, bukan form SPPD.',
+      gap: 'Diperlukan field status pada record SPPD dan sinkronisasi yang andal untuk mencegah double counting saat pengajuan melintasi bulan.'
+    },
+
+    attendance: {
+      title: 'Attendance / Time Off', klas: 'BAWAAN ODOO', where: 'Sumber luar &middot; Blueprint bagian 7 &amp; 13',
+      body: [
+        'Sumber Work Entries berupa hari dan jam kerja serta cuti. Proses attendance mentah berada di luar cakupan modul Payroll: ia ditangani modul Attendance sendiri, dan Payroll hanya mengonsumsi hasilnya sebagai Work Entries.',
+        'Pemisahan ini disengaja agar perubahan kebijakan kehadiran tidak merembet ke mesin perhitungan gaji.'
+      ],
+      list: [
+        'Memakai model bawaan Odoo 19 tanpa pengembangan kode khusus.',
+        'Cuti masuk lewat Time Off dan ikut mengurangi hari kerja.',
+        'Analisis tersedia lewat Work Entries Analysis pada kelompok Reporting.'
+      ],
+      meta: [['Klasifikasi', 'Bawaan Odoo'], ['Register', 'MHC-P05'], ['Batas', 'Attendance mentah di luar cakupan']],
+      note: '',
+      gap: 'Register mencatat API V1 attendance masih menyusul. Selama API belum ada, perlu jalur pengisian Work Entries sementara yang disepakati Tim Payroll.'
+    },
+
+    konfig_pln: {
+      title: 'Konfigurasi PLN ES', klas: 'KUSTOMISASI', where: 'Configuration &middot; Blueprint bagian 3.2',
+      body: [
+        'Tujuh tabel parameter khas PLN ES yang menjadi basis seluruh komponen P1 sampai P23. Inilah bagian yang tidak punya padanan bawaan di Odoo, sehingga dibangun sebagai kustomisasi.',
+        'Seluruh tarif disimpan berbasis tanggal berlaku. Konsekuensinya: perubahan regulasi atau kenaikan tarif cukup dikonfigurasi ulang lewat baris baru, tanpa menyentuh kode salary rule sama sekali.'
+      ],
+      list: [
+        'Entitas Asal &amp; Tarif Class &rarr; menentukan salary_rate_class (organik vs tugas karya).',
+        'Tabel Nilai P1 &rarr; Pay for Person per pegawai (hr.pln.p1.table).',
+        'Tarif POG / P2A1 &rarr; per POG Grade &times; Tarif Class.',
+        'Tarif Jabatan / P21B &rarr; per POG &times; Class &times; Jenis Jabatan.',
+        'Tarif Khusus / P23 &rarr; ditarik sebagai input rutin get_rutin("p23").',
+        'Master Kota PLN &amp; Tabel P22A &rarr; nilai per POG &times; Kategori Kemahalan.',
+        'Mapping Agama &rarr; Bulan THR sebagai pemicu rule THR.'
+      ],
+      meta: [['Pemilik', 'Tim Payroll PLN ES'], ['Kunci pencarian', 'POG &times; Class &times; Jabatan &times; Kota'], ['Register', 'MHC-P01']],
+      note: 'Tunjangan yang bernilai nol hanya untuk sebagian pegawai hampir selalu berarti baris tabel tarif untuk kombinasi kota / POG / jabatan itu belum ada &mdash; bukan kesalahan salary rule.',
+      gap: 'Aturan pemicu kategori kota (A/B/C) dan pembedaan organik vs tugas karya belum final. Bila tertunda, tarif P22A salah dan rekonsiliasi terhadap Cortex gagal.'
+    },
+
+    other_config: {
+      title: 'Other Configuration', klas: 'KUSTOMISASI', where: 'Configuration &middot; Blueprint bagian 3.3',
+      body: [
+        'Lapisan batas dan tarif untuk pajak maupun iuran. Terpisah dari tabel tarif PLN karena isinya mengikuti regulasi nasional, bukan struktur remunerasi internal.',
+        'Sama seperti tabel tarif, seluruh nilainya berbasis tanggal berlaku sehingga perubahan PMK atau Perpres cukup ditambahkan sebagai baris baru.'
+      ],
+      list: [
+        'Cutoff Periode &rarr; Date Start/End, Tahun Pajak, Masa Pajak, Visible.',
+        'Limit PTKP &rarr; kode TK/0 sampai K/3 beserta Tax Reduction.',
+        'Limit Tunjangan BPJS Kesehatan &rarr; plafon dasar upah (mis. Rp 12 juta).',
+        'Limit Tunjangan Pensiun &rarr; batas pemotongan JP dan maksimum usia.',
+        'Tabel Keselamatan Kerja &rarr; tingkat risiko dan persentase JKK.',
+        'Limit Biaya Jabatan &rarr; 5% bruto, maksimum Rp 500.000 per bulan.',
+        'Kelompok PPh21 &amp; Lapis PPh Progresif &rarr; tarif TER A/B/C dan lapisan Pasal 17.'
+      ],
+      meta: [['Dasar hukum', 'PMK 168/2023, Perpres 64/2020, Form 1721-A1'], ['Pemilik', 'Tim Payroll / Pajak'], ['Register', 'MHC-P01']],
+      note: 'Cutoff Periode wajib diisi lebih dulu. Bila kosong, periode tidak tersedia dan Pay Run sama sekali tidak bisa dibuat.',
+      gap: 'Otoritas dan default cut-off masih terbuka: siklus 1&ndash;30 dipakai sebagai SOP sementara hasil FGD 24 Jul, sedangkan default 20&ndash;19 belum dikonfirmasi. Variasi periode langsung menimbulkan selisih angka output.'
+    },
+
+    data_pegawai: {
+      title: 'Data Pegawai Payroll &amp; Tax Info', klas: 'HYBRID', where: 'Employees &middot; Blueprint bagian 5',
+      body: [
+        'Tab khusus penggajian dan pajak yang menempel pada record pegawai. Klasifikasinya hybrid karena recordnya bawaan Odoo, tetapi field-field penentu tarif adalah tambahan khas PLN ES.',
+        'Inilah simpul yang mengubah identitas pegawai menjadi angka: POG Grade, Tarif Class, Jenis Jabatan, dan Kategori Kota dipakai sebagai kunci pencarian ke tabel P2A1, P21B, P22A, dan P23.'
+      ],
+      list: [
+        'Others ID &rarr; NPWP, BPJS Kesehatan, BPJS Tenaker, Pension Number, BPJS JKP.',
+        'PTKP &rarr; kode status keluarga yang menentukan Tax Reduction pada PPh21.',
+        'Atribut tarif &rarr; POG Grade, Tarif Class, Jenis Jabatan, Kategori Kota.',
+        'BPJS extra &rarr; jumlah tanggungan atau persentase tambahan, dikelola sebagai input rutin.',
+        'Tanggal pengangkatan &amp; agama &rarr; pemicu THR, insentif cuti, dan winduan.',
+        'Employee Records, Salary Adjustments, Contract To Expired, dan Pinjaman.'
+      ],
+      meta: [['Field kunci', 'salary_rate_class, city_category, date_appointment'], ['Berbagi record dengan', 'Employee Management'], ['Register', 'MHC-P03']],
+      note: 'Divisi pegawai menentukan analytic distribution pada jurnal payroll. Pemetaannya diatur di Accounting &rarr; Configuration &rarr; Pemetaan Dimensi Payroll; divisi kosong menghasilkan jurnal tanpa dimensi analitik.',
+      gap: ''
+    },
+
+    input_extras: {
+      title: 'Input Extras', klas: 'KUSTOMISASI', where: 'Input Extras &middot; Blueprint bagian 6',
+      body: [
+        'Menampung komponen non-standar yang berubah tiap periode. Fungsinya bukan sekadar menambah nominal, melainkan memisahkan dampak sebuah komponen terhadap take-home pay dari pengaruhnya pada objek pajak.',
+        'Pemisahan itu yang membuat SPPD dan kacamata bisa dihitung sebagai objek pajak tanpa harus ikut menambah THP, sesuai kesepakatan FGD.'
+      ],
+      list: [
+        'Adjustment Category &rarr; pengelompokan jenis penyesuaian (SPPD, reimbursement).',
+        'Income Adjustment &rarr; pendapatan non-rutin objek pajak (SPPD Rp 500.000, kacamata).',
+        'Input Rutin &amp; Kategori Rutin &rarr; pulsa, P23, BBM, kendaraan.',
+        'Input Potongan BPRP &rarr; cicilan pinjaman BPRP.',
+        'Deduction Adjustment &rarr; potongan non-rutin dan koreksi per pegawai.'
+      ],
+      meta: [['Basis pemajakan', 'Cash basis &mdash; hanya yang dibayarkan'], ['Sumber SPPD', 'PLN Home / HXMS'], ['Register', 'MHC-P04']],
+      note: 'Income Adjustment hanya masuk ke slip bila kategorinya terdaftar di aturan gaji. Kategori di luar daftar tetap tercatat tetapi bernilai nol rupiah tanpa pesan kesalahan &mdash; selalu uji di slip percobaan setelah membuat pemetaan baru.',
+      gap: 'Cut-off pajak untuk pengajuan lintas bulan atau tahun belum ditetapkan, dan flag status pada record SPPD belum ada.'
+    },
+
+    work_entries: {
+      title: 'Work Entries', klas: 'BAWAAN ODOO', where: 'Work Entries &middot; Blueprint bagian 7',
+      body: [
+        'Representasi hari dan jam kerja yang dikonsumsi mesin salary rules pada saat Compute Sheet dijalankan. Bersama Salary Inputs, Work Entries adalah dua masukan yang menentukan isi setiap slip.',
+        'Memakai model bawaan Odoo 19 tanpa pengembangan khusus; yang perlu dijaga hanyalah kelengkapan datanya sebelum Pay Run dihitung.'
+      ],
+      list: [
+        'Sumber: modul Attendance dan Time Off.',
+        'Cuti ikut masuk dan mengurangi hari kerja pada periode berjalan.',
+        'Analisis lewat Work Entries Analysis pada kelompok Reporting.'
+      ],
+      meta: [['Klasifikasi', 'Bawaan Odoo'], ['Dikonsumsi oleh', 'Salary Rules saat Compute'], ['Register', 'MHC-P05']],
+      note: '',
+      gap: 'API V1 attendance masih menyusul (checkpoint 30 Jul).'
+    },
+
+    pay_run: {
+      title: 'Pay Run (batch)', klas: 'BAWAAN ODOO', where: 'Payslips &rarr; Pay Runs &middot; Blueprint bagian 8.1',
+      body: [
+        'Penggajian dijalankan secara batch, bukan per orang. Pay Run mengikat Salary Structure, Cutoff Periode, Pay Schedule, dan Period, lalu memilih pegawai yang diikutsertakan.',
+        'Pay Run juga berfungsi sebagai wadah persetujuan: begitu ia dibuat oleh LV1, rantai LV1 sampai LV4 berjalan sendiri tanpa perlu ada tombol Submit.'
+      ],
+      list: [
+        'Menu Payslips &rarr; Pay Runs &rarr; tombol Pay Run untuk batch baru.',
+        'Isi Salary Structure (mis. Payroll Gross Up), Cutoff Periode, Pay Schedule, Period.',
+        'Select Employees atau Select All untuk memilih peserta batch.',
+        'Status Pay Run: Ready &rarr; Done &rarr; Paid.',
+        'Report Transfer Gaji per Bank dijalankan dari sini.'
+      ],
+      meta: [['Dibuat oleh', 'LV1 &mdash; Officer Renumerasi'], ['Prasyarat', 'Cutoff Periode sudah terisi'], ['Register', 'MHC-P06']],
+      note: 'Tidak ada tombol Submit &mdash; itu memang tidak pernah ada. Rantai persetujuan dimulai sendiri begitu Pay Run dibuat, jadi yang perlu dilakukan hanyalah menunggu approver menekan Approve di kanban.',
+      gap: ''
+    },
+
+    approval: {
+      title: 'Rantai Persetujuan Pay Run', klas: 'KUSTOMISASI', where: 'Kanban Pay Run &middot; Buku 08 &sect;2',
+      body: [
+        'Gerbang berjenjang kategori PLN ES &ndash; Payroll Approval: LV1 Officer Renumerasi, LV2 Asisten Manager, LV3 Manager, dan LV4 VP HC. Inilah simpul yang mengunci mesin perhitungan.',
+        'Gerbang ini digambar di dalam jalur Pay Run &rarr; Salary Rules karena memang bukan cabang: selama LV4 belum menyetujui, Compute Sheet tidak akan berjalan dan slip tidak bisa divalidasi.'
+      ],
+      list: [
+        'Tombol Approve dan Tolak hanya ada di tampilan kanban Pay Run, bukan di form.',
+        'Compute Sheet hanya bisa dijalankan LV1, dan hanya setelah LV4 menyetujui.',
+        'Payslip tidak bisa divalidasi selama Pay Run induknya belum disetujui.',
+        'Modul: pln_payroll_approval.'
+      ],
+      meta: [['Tingkat', 'LV1 &rarr; LV2 &rarr; LV3 &rarr; LV4'], ['Pemicu', 'Otomatis saat Pay Run dibuat'], ['Tanpa', 'Tombol Submit']],
+      note: 'Compute Sheet yang ditolak dengan pesan soal status persetujuan berarti Pay Run belum disetujui sampai LV4. Ini perilaku yang disengaja, bukan kesalahan sistem.',
+      gap: ''
+    },
+
+    salary_rules: {
+      title: 'Salary Rules &amp; Salary Structure', klas: 'KUSTOMISASI', where: 'Configuration &middot; Blueprint bagian 4',
+      body: [
+        'Mesin perhitungan yang mengeksekusi setiap komponen gaji berurutan sesuai Sequence, dikelompokkan ke dalam Salary Structure seperti Regular Pay atau Payroll Gross Up. Setiap rule memiliki Condition, Computation berbasis Python, Accounting (debit/kredit, analytic distribution, excluded from net), dan Reporting.',
+        'Praktik yang disepakati: tarif dan rentang tinggal di master konfigurasi, rule hanya memanggilnya. Inilah yang membuat perubahan regulasi tidak menuntut development baru.'
+      ],
+      list: [
+        'Pendapatan: P1 (INCOME), P2A1, P21B, P22A, P23, T_PULSA.',
+        'Irreguler: THR dan THR proporsional, insentif cuti tahunan/besar/winduan, SPPD &amp; kacamata.',
+        'Gross-up: TUNJ_PPH sebagai komponen tunjangan pajak.',
+        'Potongan: JHT 2%, BPJS Kesehatan 1%, JP 1%, DPLK 6%, BPRP/Lazis/serikat, Loan.',
+        'Kontribusi perusahaan: JHT 3,7%, JKK 0,89%, JKM 0,3%, BPJS Kesehatan 4%, JKP 0,46%, JP 2%, DPLK 5%.',
+        'THP (sequence 800) = Bruto &minus; Total Deduction, dengan PPh21 TER sebagai potongan bulanan.'
+      ],
+      meta: [['Mesin', 'altech_payroll_indonesia'], ['Lapisan PLN ES', 'pln_payroll_es'], ['Register', 'MHC-P02']],
+      note: 'Kontribusi pemberi kerja tidak ditambahkan ke THP. Ia hanya menambah objek pajak (Bruto Tax) sesuai sifat masing-masing komponen.',
+      gap: 'Perbaikan sequence dan logic masih berjalan menuju UAT (checkpoint 9 Jul).'
+    },
+
+    pinjaman: {
+      title: 'Pinjaman &amp; Potongan per Pegawai', klas: 'KUSTOMISASI', where: 'Employees &rarr; Pinjaman &middot; Blueprint bagian 10',
+      body: [
+        'Pinjaman dan potongan yang sifatnya per individu &mdash; BPJS, DPLK, Lazis, serikat, BPRP &mdash; dikelola terpisah lalu ditarik sebagai potongan pada slip gaji.',
+        'Untuk kemudahan ekspor ke SAP, potongan dikelompokkan per kode akun perantara sehingga jurnalnya tidak perlu dipilah manual di hilir.'
+      ],
+      list: [
+        'Pinjaman: pokok, tenor, cicilan bulanan &rarr; POTONGAN_LOAN hingga lunas.',
+        'Alur: New &rarr; Generate Jadwal &rarr; Confirm &rarr; Set Selesai.',
+        'Status: Draft &rarr; Progress &rarr; Done; jadwal berisi baris Open/Done/Close.',
+        'Potongan rutin: Lazis, serikat, BPRP, DPLK/DAPEN pegawai.',
+        'BPJS per orang: dasar upah berbatas plafon; anomali tanggungan lewat field BPJS extra.'
+      ],
+      meta: [['Modul', 'pln_payroll_loan'], ['Masuk sebagai', 'POTONGAN_LOAN'], ['Register', 'MHC-P08']],
+      note: 'Cicilan baru mulai dipotong lewat payroll setelah tombol Confirm ditekan dan status pinjaman menjadi Progress.',
+      gap: 'Skema bunga atau tanpa bunga serta rumus pembulatan cicilan belum dikonfirmasi. Aturan cut-off komponen variabel dan penanganan kasus lintas bulan menunggu SOP manual override beserta audit trail-nya.'
+    },
+
+    pph21: {
+      title: 'PPh21 TER &amp; Rekonsiliasi Pasal 17', klas: 'KUSTOMISASI', where: 'Salary Rules &middot; Blueprint bagian 9',
+      body: [
+        'Pajak dihitung dengan metode TER (Tarif Efektif Rata-rata, PMK 168/2023) untuk potongan bulanan, lalu direkonsiliasi secara progresif menurut Pasal 17 pada Masa Pajak Desember.',
+        'Seluruh tarif dan lapisan berada di master konfigurasi (Kelompok PPh21 dan Lapis PPh Progresif), sehingga perubahan aturan pajak cukup dikonfigurasi ulang.'
+      ],
+      list: [
+        'Januari&ndash;November: tarif TER kategori A/B/C atas dasar PTKP dan bruto objek pajak.',
+        'Hasilnya menjadi komponen potongan PPH21_BULANAN pada slip.',
+        'Desember: lapisan progresif Pasal 17 (batas bawah/atas, persentase, akumulasi).',
+        'Pengurang sebelum progresif: biaya jabatan 5% bruto maksimum Rp 6 juta setahun, lalu PTKP.',
+        'Gross-up: struktur Payroll Gross Up menempatkan TUNJ_PPH sesuai kebijakan.'
+      ],
+      meta: [['Dasar hukum', 'PMK 168/2023'], ['Sumber tarif', 'Other Configuration'], ['Register', 'MHC-P07']],
+      note: 'Grouping gross-up dan non gross-up tidak ditulis di rule, melainkan dikonfigurasi pada Salary Structure.',
+      gap: 'Simulasi sampel Juni/Juli terhadap Cortex masih berjalan; selisih tipis ditelusuri lewat rekonsiliasi report Odoo ke sheet gold. Aturan resmi cut-off pajak lintas bulan atau tahun belum ditetapkan.'
+    },
+
+    slip: {
+      title: 'Slip Gaji', klas: 'BAWAAN ODOO', where: 'Payslips &middot; Blueprint bagian 8.2',
+      body: [
+        'Slip melewati tiga status. Draft menyediakan Compute Sheet, Cancel, dan Print; Compute menghitung seluruh komponen berdasarkan Salary Inputs dan Work Entries. Validate memverifikasi slip dan membentuk jurnal akuntansi otomatis lewat mapping COA. Paid menandai slip terbayar dan menjadi basis transfer bank serta pelaporan.',
+        'Tab Salary Computation menampilkan rincian per komponen beserta Code Group, Report Category, Rate, dan Total.'
+      ],
+      list: [
+        'Draft &rarr; Validated &rarr; Paid.',
+        'Total yang ditampilkan: Bruto Tax Before Live, Biaya Jabatan, Total Bruto Tax.',
+        'Lalu PPh21 TER, Total Bruto N-1, PPh21 All, Bruto, Total Deduction.',
+        'Ditutup Company Contribution dan Takehome Pay.',
+        'Kirim Slip Ini tersedia pada status Validated dan Paid.'
+      ],
+      meta: [['Dihitung oleh', 'Salary Rules engine'], ['Jurnal terbentuk saat', 'Validate'], ['Register', 'MHC-P06']],
+      note: 'Payslip tidak bisa divalidasi selama Pay Run induknya belum berstatus disetujui. Kirim Slip Gaji ke Semua baru muncul ketika Pay Run sudah berstatus Done.',
+      gap: ''
+    },
+
+    jurnal: {
+      title: 'Jurnal COA &amp; Cost Center', klas: 'TO DEVELOP', where: 'Accounting &middot; Blueprint bagian 11',
+      body: [
+        'Jurnal salary terbentuk saat posting lalu diteruskan ke tim Perbendaharaan dan SAP. Syaratnya jurnal itu mengikat COA serta cost center atau internal order yang benar.',
+        'Analytic distribution ditentukan oleh Divisi pegawai, dan pemetaannya diatur terpisah di Accounting &rarr; Configuration &rarr; Pemetaan Dimensi Payroll.'
+      ],
+      list: [
+        'Audit Dimensi Analitik memeriksa jurnal payroll yang dimensinya kosong atau salah.',
+        'Export Jurnal ke SAP menghasilkan berkas lewat tombol Buat Berkas.',
+        'Dari form Divisi tersedia tombol Buka Analytic Plans.',
+        'Modul: pln_payroll_analytic, pln_hr_divisi.'
+      ],
+      meta: [['Pemilik', 'Finance / Akuntansi'], ['Target', 'Selesai s.d. 15 Ags 2026 (tahap P6)'], ['Register', 'MHC-P10']],
+      note: 'Jurnal payroll tanpa dimensi analitik biasanya berarti divisi pegawai kosong atau pemetaannya belum dibuat. Jalankan Audit Dimensi Analitik untuk melihat daftarnya sekaligus.',
+      gap: 'Mapping COA dan cost center per divisi belum final, dan variasi antar unit masih perlu konsolidasi. Bila tertunda: jurnal tidak dapat diposting dan rekonsiliasi manual membengkak.'
+    },
+
+    reporting: {
+      title: 'Reporting &amp; Output', klas: 'HYBRID', where: 'Reporting &middot; Blueprint bagian 11',
+      body: [
+        'Lapisan keluaran modul: laporan pajak, rekap iuran, pivot rincian komponen, dan berkas ekspor untuk sistem tujuan. Sebagian besar memakai reporting bawaan Odoo, sebagian lagi perlu format khusus.',
+        'Simpul inilah batas akhir modul Payroll. Setelah titik ini Odoo tidak lagi menghitung apa pun, ia hanya menyerahkan berkas.'
+      ],
+      list: [
+        'Bawaan Odoo: PPh21-1 &amp; PPh21-1721 Summary, Summary BPJS, Payslip Lines.',
+        'Bawaan Odoo: Headcount, Work Entries Analysis, Payslip Work Days dan Other Inputs.',
+        'Hybrid: Transfer Gaji per Bank (Excel/CSV, cutoff 1&ndash;30) &mdash; Preview lalu Download.',
+        'Hybrid: jurnal COA otomatis dan Export Jurnal ke SAP.',
+        'Khas PLN ES: Payroll Detail, Export BPA1 Tahunan, Report BPMP to Coretax.'
+      ],
+      meta: [['Modul laporan', 'pln_payroll_es'], ['Grup akses', 'Reporting MHC'], ['Register', 'MHC-P09, MHC-P10']],
+      note: 'Rekening bank pegawai tersimpan di dua tempat di Odoo. Pegawai yang hilang dari Report Transfer Gaji per Bank biasanya rekeningnya diisi di form kontak, bukan di tempat yang dibaca laporan ini.',
+      gap: 'Template export Cortex dan BPJS serta format CSV bank masih menunggu konfirmasi. Selama itu, transisi output dikerjakan manual dan berisiko salah.'
+    },
+
+    cortex: {
+      title: 'Cortex', klas: 'DI LUAR CAKUPAN', where: 'Sistem tujuan &middot; Blueprint bagian 13',
+      body: [
+        'Odoo mengekspor berkas pajak sesuai format Cortex. Perhitungan dan pelaporan pajak final tetap dilakukan di Cortex/PSIAP &mdash; itu berada di luar batas pengembangan modul Payroll.',
+        'Batas sistemnya tegas: Odoo berhenti pada export.'
+      ],
+      list: [
+        'Report BPMP to Coretax menghasilkan bukti potong PPh21 format Coretax DJP.',
+        'PPh21-1721 Summary dan PPh21-I memakai wizard bawaan altech.',
+        'Export BPA1 Tahunan untuk bukti potong tahunan (A1).'
+      ],
+      meta: [['Arah', 'Odoo &rarr; Cortex (export berkas)'], ['Batas', 'Export saja'], ['Status', 'Di luar cakupan']],
+      note: 'Rekonsiliasi bruto, potongan, THP, dan PPh21 antara Odoo dan Cortex harus tuntas sebelum go-live &mdash; ini pengendalian wajib, bukan opsional.',
+      gap: 'Template export Cortex belum final (MHC-P11).'
+    },
+
+    bpjs: {
+      title: 'BPJS', klas: 'HYBRID', where: 'Sistem tujuan &middot; Blueprint bagian 13',
+      body: [
+        'Export rekap peserta dan iuran untuk BPJS Kesehatan maupun BPJS Ketenagakerjaan, bersumber dari Summary BPJS per Payslip Run.',
+        'Perhitungan iurannya sendiri terjadi di dalam salary rules; yang dikirim keluar hanya rekapitulasinya.'
+      ],
+      list: [
+        'Summary BPJS: pilih periode lalu Download.',
+        'Rekap iuran per Payslip Run (Payroll Calculation Table).',
+        'Plafon dan persentase diambil dari Other Configuration.'
+      ],
+      meta: [['Arah', 'Odoo &rarr; BPJS (export berkas)'], ['Sumber angka', 'Salary Rules + Other Configuration'], ['Register', 'MHC-P11']],
+      note: '',
+      gap: 'Format template export BPJS masih menunggu konfirmasi.'
+    },
+
+    bank: {
+      title: 'Bank / Perbendaharaan', klas: 'HYBRID', where: 'Sistem tujuan &middot; Blueprint bagian 13',
+      body: [
+        'Berkas transfer gaji per bank dalam format Excel atau CSV, mengikuti cutoff 1&ndash;30. Dihasilkan dari Pay Run dan diserahkan ke tim Perbendaharaan.',
+        'Laporannya menyediakan preview per bank sebelum berkasnya diunduh.'
+      ],
+      list: [
+        'Report Transfer Gaji per Bank: Preview dulu, lalu Download Excel.',
+        'Dijalankan dari Pay Run, dikelompokkan per bank.',
+        'Basisnya slip berstatus Paid.'
+      ],
+      meta: [['Arah', 'Odoo &rarr; bank (export berkas)'], ['Cutoff', '1&ndash;30 (SOP sementara)'], ['Register', 'MHC-P10']],
+      note: 'Pegawai yang tidak muncul di laporan ini hampir selalu karena rekening banknya diisi di tempat yang tidak dibaca laporan.',
+      gap: 'Format CSV bank termasuk item yang harus dikonfirmasi sebelum spesifikasi dikunci.'
+    },
+
+    sap: {
+      title: 'SAP', klas: 'HYBRID', where: 'Sistem tujuan &middot; Blueprint bagian 13',
+      body: [
+        'Jurnal salary dan posting beban gaji beserta COA dan cost center dikirim lewat output atau N8N. Posting akhir buku besar dilakukan di SAP, di luar cakupan modul Payroll.',
+        'Karena itu kualitas mapping COA di hulu menentukan apakah berkas ini bisa langsung diposting atau harus dirapikan manual.'
+      ],
+      list: [
+        'Export Jurnal ke SAP lewat tombol Buat Berkas.',
+        'Wajib mengikat COA dan cost center atau internal order.',
+        'Jalur pengiriman: output berkas atau N8N.'
+      ],
+      meta: [['Arah', 'Odoo &rarr; SAP (jurnal)'], ['Bergantung pada', 'Mapping COA &amp; cost center'], ['Register', 'MHC-P10']],
+      note: '',
+      gap: 'Finalisasi mapping COA dan cost center ditargetkan tahap P6, paling lambat 15 Agustus 2026.'
+    },
+
+    ssot: {
+      title: 'SSOT PLN Pusat', klas: 'PERLU KONFIRMASI', where: 'Sistem tujuan &middot; Blueprint bagian 13',
+      body: [
+        'Arah push atau pull master organisasi dan POG antara Odoo dan PLN Pusat. Ini satu-satunya titik integrasi yang arah datanya belum ditentukan sama sekali.',
+        'Keputusannya menentukan siapa pemilik kebenaran struktur organisasi: Odoo atau sistem pusat.'
+      ],
+      list: [
+        'Objek: master organisasi dan POG.',
+        'Arah data belum ditetapkan (push atau pull).',
+        'Terkait erat dengan kebersihan master pegawai pada bagian 5 dan 12.'
+      ],
+      meta: [['Arah', 'Belum ditetapkan'], ['Terkait', 'Bagian 5 &amp; 13'], ['Status', 'Perlu konfirmasi']],
+      note: '',
+      gap: 'Selama arah SSOT belum diputuskan, governance data organisasi tidak jelas dan risiko data ganda tetap terbuka.'
+    }
+  };
+
+  /* ---------- guided views ---------- */
+  var VIEWS = {
+    spine: {
+      nodes: ['emp_mgmt', 'data_pegawai', 'salary_rules', 'slip', 'reporting'],
+      lane: false,
+      note: '<b>Jalur utama.</b> Master pegawai mengisi atribut tarif, mesin Salary Rules menghitung komponen P1&ndash;P23, slip gaji melewati Draft &rarr; Validated &rarr; Paid, dan berakhir di lapisan output. Satu jalur tanpa cabang.'
+    },
+    gate: {
+      nodes: ['pay_run', 'approval', 'salary_rules', 'slip'],
+      lane: false,
+      note: '<b>Gerbang persetujuan.</b> Pay Run dibuat LV1, rantai LV1&rarr;LV4 mulai otomatis tanpa tombol Submit, dan Compute Sheet baru terbuka setelah LV4 menyetujui. Approve dan Tolak hanya ada di tampilan kanban.'
+    },
+    tarif: {
+      nodes: ['konfig_pln', 'other_config', 'data_pegawai', 'salary_rules'],
+      lane: false,
+      note: '<b>Sumber tarif.</b> Seluruh tarif dan rentang berada di master konfigurasi berbasis tanggal berlaku; salary rule hanya memanggilnya. Atribut pegawai (POG, Class, Jabatan, Kota) adalah kunci pencariannya.'
+    },
+    batas: {
+      nodes: ['reporting', 'jurnal', 'cortex', 'bpjs', 'bank', 'sap', 'ssot'],
+      lane: true,
+      note: '<b>Batas sistem.</b> Odoo berhenti pada export. Perhitungan pajak final tetap di Cortex, posting buku besar tetap di SAP; BPJS dan bank menerima file, bukan integrasi dua arah.'
+    },
+    belum: {
+      nodes: ['jurnal', 'pln_home', 'ssot', 'reporting', 'pinjaman'],
+      lane: false,
+      note: '<b>Belum dikunci.</b> Mapping COA dan cost center, template export Cortex/BPJS/bank, flag SPPD cash-basis, arah SSOT, dan skema bunga pinjaman &mdash; semuanya masih menunggu konfirmasi Tim Payroll sebelum spesifikasi dikunci.'
+    }
+  };
+
+  var svg = document.getElementById('diagram');
+  var detail = document.getElementById('detail');
+  var viewNote = document.getElementById('view-note');
+  var defaultNote = viewNote.innerHTML;
+  var nodes = Array.prototype.slice.call(svg.querySelectorAll('.node'));
+  var edges = Array.prototype.slice.call(svg.querySelectorAll('[data-from][data-to]'));
+  var lane = document.getElementById('lane-target');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.view-chip[data-view]'));
+
+  function clearFocus() {
+    svg.removeAttribute('data-focused');
+    nodes.forEach(function (n) { n.removeAttribute('data-on'); });
+    edges.forEach(function (e) { e.removeAttribute('data-on'); });
+    lane.removeAttribute('data-on');
+  }
+
+  function focusSet(ids, laneOn) {
+    var set = {};
+    ids.forEach(function (id) { set[id] = true; });
+    svg.setAttribute('data-focused', 'true');
+    nodes.forEach(function (n) {
+      if (set[n.getAttribute('data-node')]) n.setAttribute('data-on', 'true');
+      else n.removeAttribute('data-on');
+    });
+    edges.forEach(function (e) {
+      var a = e.getAttribute('data-from'), b = e.getAttribute('data-to');
+      if ((set[a] && set[b]) || (set[a] && b === 'lane' && laneOn)) e.setAttribute('data-on', 'true');
+      else e.removeAttribute('data-on');
+    });
+    if (laneOn) lane.setAttribute('data-on', 'true'); else lane.removeAttribute('data-on');
+  }
+
+  function showDetail(id) {
+    var s = SPEC[id];
+    if (!s) { detail.hidden = true; return; }
+    var kcls = {
+      'TO DEVELOP': 'k-todev', 'IN PROGRESS': 'k-progress', 'BAWAAN ODOO': 'k-odoo',
+      'KUSTOMISASI': 'k-kustom', 'HYBRID': 'k-hybrid',
+      'PERLU KONFIRMASI': 'k-confirm', 'DI LUAR CAKUPAN': 'k-outscope'
+    }[s.klas] || 'k-outscope';
+    var html = '<div class="detail-head">'
+      + '<h3>' + s.title + '</h3>'
+      + '<span class="k ' + kcls + '">' + s.klas + '</span>'
+      + '<span class="where">' + s.where + '</span>'
+      + '</div>';
+
+    html += '<div class="detail-cols"><div>'
+      + s.body.map(function (p) { return '<p>' + p + '</p>'; }).join('')
+      + '</div>';
+
+    if (s.list && s.list.length) {
+      html += '<div class="detail-list"><div class="lh">Isi &amp; perilaku</div><ul>'
+        + s.list.map(function (b) { return '<li><span>' + b + '</span></li>'; }).join('')
+        + '</ul></div>';
+    }
+    html += '</div>';
+
+    if (s.meta && s.meta.length) {
+      html += '<dl class="detail-meta">'
+        + s.meta.map(function (m) { return '<div><dt>' + m[0] + '</dt><dd>' + m[1] + '</dd></div>'; }).join('')
+        + '</dl>';
+    }
+    if (s.note) html += '<div class="field-note"><b>Catatan lapangan:</b> ' + s.note + '</div>';
+    if (s.gap)  html += '<div class="field-note gap-note"><b>Belum dikunci:</b> ' + s.gap + '</div>';
+
+    detail.innerHTML = html;
+    detail.hidden = false;
+  }
+
+  /* Chips inside the target-system lane have no edges of their own; they hang
+     off the lane. Selecting one lights the lane and whichever node feeds it,
+     both discovered from the markup so this stays module-agnostic. */
+  var LANE_FEEDER = (function () {
+    var e = svg.querySelector('[data-to="lane"]');
+    return e ? e.getAttribute('data-from') : null;
+  })();
+
+  function isLaneChip(id) {
+    var n = svg.querySelector('.node[data-node="' + id + '"]');
+    return !!(n && n.getAttribute('data-lane') === '1');
+  }
+
+  function selectNode(id) {
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    var neighbours = { };
+    neighbours[id] = true;
+    var laneOn = false;
+    if (isLaneChip(id)) { laneOn = true; if (LANE_FEEDER) neighbours[LANE_FEEDER] = true; }
+    edges.forEach(function (e) {
+      var a = e.getAttribute('data-from'), b = e.getAttribute('data-to');
+      if (a === id) { if (b === 'lane') laneOn = true; else neighbours[b] = true; }
+      if (b === id) neighbours[a] = true;
+    });
+    focusSet(Object.keys(neighbours), laneOn);
+    showDetail(id);
+    viewNote.innerHTML = 'Menyorot <b>' + (SPEC[id] ? SPEC[id].title : id)
+      + '</b> beserta tetangga langsungnya. Tekan <b>Tampilkan semua</b> untuk kembali.';
+  }
+
+  nodes.forEach(function (n) {
+    var id = n.getAttribute('data-node');
+    n.addEventListener('click', function () { selectNode(id); });
+    n.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectNode(id); }
+    });
+  });
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var key = chip.getAttribute('data-view');
+      var active = chip.getAttribute('aria-pressed') === 'true';
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+      detail.hidden = true;
+      if (active) { clearFocus(); viewNote.innerHTML = defaultNote; return; }
+      chip.setAttribute('aria-pressed', 'true');
+      var v = VIEWS[key];
+      focusSet(v.nodes, v.lane);
+      viewNote.innerHTML = v.note;
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    clearFocus();
+    detail.hidden = true;
+    viewNote.innerHTML = defaultNote;
+  });
+
+  /* ---------- deep link: ?node=<id> or ?view=<id> ---------- */
+  try {
+    var qs = new URLSearchParams(window.location.search);
+    var qNode = qs.get('node');
+    var qView = qs.get('view');
+    if (qNode && SPEC[qNode]) {
+      selectNode(qNode);
+    } else if (qView && VIEWS[qView]) {
+      var chip = document.querySelector('.view-chip[data-view="' + qView + '"]');
+      if (chip) chip.click();
+    }
+  } catch (_) {}
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (ev) {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    var tag = (ev.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (ev.key === 't' || ev.key === 'T') {
+      applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    } else if (ev.key === 'p' || ev.key === 'P') {
+      window.print();
+    } else if (ev.key === 'Escape') {
+      document.getElementById('btn-reset').click();
+    }
+  });
+})();
+</script>
+</body>
+</html>
