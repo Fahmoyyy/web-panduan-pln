@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blueprint Modul Logistik SCM (Purchase Requisition) - PRJ-0006</title>
+<title>Blueprint Modul Logistik SCM (Purchase Requisition) v1.1 - PRJ-0006</title>
 <script>
   (function () {
     try {
@@ -436,7 +436,7 @@ footer {
   <div class="cartouche">
     <div class="cartouche-top">
       <span class="tick"></span>
-      <span>Blueprint / Rev 1.0</span>
+      <span>Blueprint / Rev 1.1</span>
       <span class="sep">/</span>
       <span>PRJ-0006</span>
       <span class="sep">/</span>
@@ -457,9 +457,10 @@ footer {
       <div><dt>Ditujukan kepada</dt><dd>BPO Logistik / SCM PLN ES</dd></div>
       <div><dt>Status dokumen</dt><dd>Kerangka pengembangan &mdash; seluruh item TO DEVELOP</dd></div>
       <div><dt>Kode program</dt><dd>PRJ-0006</dd></div>
-      <div><dt>Tanggal dokumen</dt><dd>4 Agustus 2026 &mdash; versi 1.0</dd></div>
+      <div><dt>Tanggal dokumen</dt><dd>25 Agustus 2026 &mdash; versi 1.1</dd></div>
       <div><dt>Titik akhir cakupan</dt><dd>Pembentukan Purchase Order</dd></div>
       <div><dt>Sumber spesifikasi</dt><dd>Rancangan fungsional &amp; alur aktual Material Request pada lingkungan demo plnes19-demo.kaitech.io</dd></div>
+      <div><dt>Pembaruan versi 1.1</dt><dd>Bagian 3 (Prasyarat Master Material &amp; Field SCM) dan bagian 9 (Item yang perlu dikonfirmasi), mengikuti MoM &ldquo;Master Data material &amp; Vendor Logistic&rdquo; 24 Agustus 2026</dd></div>
       <div><dt>Panduan operasional</dt><dd>Buku 04 &mdash; Pengadaan, SCM dan Vendor</dd></div>
     </dl>
   </div>
@@ -472,6 +473,7 @@ footer {
           <span class="label">Plate 01 &mdash; Arsitektur fungsional</span>
           <button class="view-chip" type="button" data-view="spine" aria-pressed="false">Jalur utama</button>
           <button class="view-chip" type="button" data-view="otomatis" aria-pressed="false">PR otomatis</button>
+          <button class="view-chip" type="button" data-view="masterdata" aria-pressed="false">Master data (MoM)</button>
           <button class="view-chip" type="button" data-view="referensi" aria-pressed="false">Referensi anggaran</button>
           <button class="view-chip" type="button" data-view="batas" aria-pressed="false">Batas sistem</button>
           <button class="view-chip" type="button" data-view="belum" aria-pressed="false">Belum dikunci</button>
@@ -479,10 +481,10 @@ footer {
         </div>
 
         <div class="plate-stage">
-          <svg id="diagram" viewBox="0 0 1400 560" role="img"
+          <svg id="diagram" viewBox="0 0 1400 750" role="img"
                aria-labelledby="dg-title dg-desc">
             <title id="dg-title">Arsitektur fungsional modul Purchase Request PLN ES</title>
-            <desc id="dg-desc">Master material menjadi baris Purchase Request; PR dibuat manual atau terbentuk otomatis dari Captive Contract; dari PR berstatus In progress tombol Create RFQ membentuk RFQ, lalu Confirm Order menjadikannya Purchase Order. Proses hilir penerimaan, pemeriksaan mutu, retur, dan pembayaran berada di luar cakupan.</desc>
+            <desc id="dg-desc">Master material menjadi baris Purchase Request; PR dibuat manual atau terbentuk otomatis dari Captive Contract; dari PR berstatus In progress tombol Create RFQ membentuk RFQ, lalu Confirm Order menjadikannya Purchase Order. Proses hilir penerimaan, pemeriksaan mutu, retur, dan pembayaran berada di luar cakupan. Di bawah alur utama terdapat pita prasyarat master data hasil MoM 24 Agustus 2026: katalog ISCM/ESCM, kebijakan nomenklatur dan governance, cleansing serta migrasi katalog, master jasa, dan master vendor.</desc>
 
             <defs>
               <marker id="ah" markerWidth="9" markerHeight="6.5" refX="8.4" refY="3.25" orient="auto">
@@ -526,6 +528,14 @@ footer {
             <path class="e-emph" data-from="rfq" data-to="po" d="M 924 305 L 994 305" marker-end="url(#ah-e)"/>
             <path class="e-emph" data-from="po" data-to="lane" d="M 1168 305 L 1202 305" marker-end="url(#ah-e)"/>
 
+            <!-- ---------- edges: pita prasyarat master data (MoM 24 Agu 2026) ---------- -->
+            <path class="e-gate" data-from="iscm" data-to="nomenklatur" d="M 244 631 L 314 631" marker-end="url(#ah-g)"/>
+            <path class="e-gate" data-from="nomenklatur" data-to="migrasi" d="M 522 631 L 592 631" marker-end="url(#ah-g)"/>
+            <path class="e" data-from="migrasi" data-to="jasa" d="M 800 631 L 870 631" marker-end="url(#ah)"/>
+            <path class="e" data-from="migrasi" data-to="vendor" d="M 700 664 L 700 688 Q 700 696 708 696 L 1248 696 Q 1256 696 1256 688 L 1256 672" marker-end="url(#ah)"/>
+            <path class="e-emph" data-from="migrasi" data-to="material" d="M 700 598 L 700 428 Q 700 420 692 420 L 360 420 Q 352 420 352 412 L 352 344" marker-end="url(#ah-e)"/>
+            <path class="e" data-from="vendor" data-to="rfq" d="M 1256 598 L 1256 452 Q 1256 444 1248 444 L 898 444 Q 890 444 890 436 L 890 344" marker-end="url(#ah)"/>
+
             <!-- edge labels -->
             <text class="e-label" data-from="contract" data-to="pr_otomatis" x="227" y="115" text-anchor="middle">diproses</text>
             <text class="e-label" data-from="pr_otomatis" data-to="pr" x="466" y="140" text-anchor="end">Source Document</text>
@@ -535,6 +545,12 @@ footer {
             <text class="e-label" data-from="pr" data-to="rfq" x="715" y="299" text-anchor="middle">Create RFQ</text>
             <text class="e-label" data-from="anggaran" data-to="rfq" x="848" y="400">PRK / SKK / KHS</text>
             <text class="e-label" data-from="rfq" data-to="po" x="959" y="299" text-anchor="middle">Confirm Order</text>
+            <text class="e-label" data-from="iscm" data-to="nomenklatur" x="279" y="625" text-anchor="middle">kaidah penamaan</text>
+            <text class="e-label" data-from="nomenklatur" data-to="migrasi" x="557" y="625" text-anchor="middle">cut-off</text>
+            <text class="e-label" data-from="migrasi" data-to="jasa" x="835" y="625" text-anchor="middle">menyusul</text>
+            <text class="e-label" data-from="migrasi" data-to="vendor" x="978" y="690" text-anchor="middle">template &amp; approval vendor</text>
+            <text class="e-label" data-from="migrasi" data-to="material" x="708" y="414">impor bertahap ke Odoo</text>
+            <text class="e-label" data-from="vendor" data-to="rfq" x="1070" y="438" text-anchor="middle">Supplier RFQ</text>
 
             <!-- ---------- nodes ---------- -->
             <g class="node" data-node="contract" data-kind="ext" data-klas="DI LUAR CAKUPAN" tabindex="0" role="button" aria-label="Captive Contract">
@@ -648,20 +664,71 @@ footer {
               <text class="n-tag"   x="1292" y="412" text-anchor="middle" font-size="6.5">DI LUAR CAKUPAN</text>
             </g>
 
+            <!-- ---------- pita prasyarat master data (MoM 24 Agustus 2026) ---------- -->
+            <rect class="frame" x="24" y="566" width="1352" height="158"/>
+            <rect class="frame-tab" x="24" y="556" width="418" height="20"/>
+            <text class="frame-label" x="34" y="570">PRASYARAT MASTER DATA &mdash; MoM 24 AGUSTUS 2026 (BAGIAN 3.4&ndash;3.7)</text>
+
+            <g class="node" data-node="iscm" data-kind="ext" data-klas="PERLU KONFIRMASI" tabindex="0" role="button" aria-label="Katalog ISCM dan ESCM">
+              <title>ISCM / ESCM &middot; katalog &amp; vendor existing &middot; sumber data migrasi</title>
+              <rect class="n-mask" x="44" y="598" width="200" height="66" rx="3"/>
+              <rect class="n-box"  x="44" y="598" width="200" height="66" rx="3"/>
+              <text class="n-title" x="144" y="625" text-anchor="middle">Katalog ISCM / ESCM</text>
+              <text class="n-sub"   x="144" y="640" text-anchor="middle">nomor normalisasi 10 digit</text>
+              <text class="n-tag"   x="144" y="654" text-anchor="middle">PERLU KONFIRMASI</text>
+            </g>
+
+            <g class="node" data-node="nomenklatur" data-kind="gate" data-klas="PERLU KONFIRMASI" tabindex="0" role="button" aria-label="Kebijakan Nomenklatur dan Governance Master Katalog">
+              <title>Kebijakan nomenklatur &amp; governance master katalog &middot; single source of truth belum diputuskan</title>
+              <rect class="n-mask" x="322" y="598" width="200" height="66" rx="3"/>
+              <rect class="n-box"  x="322" y="598" width="200" height="66" rx="3"/>
+              <text class="n-title" x="422" y="625" text-anchor="middle">Nomenklatur &amp; Governance</text>
+              <text class="n-sub"   x="422" y="640" text-anchor="middle">Opsi A Odoo vs Opsi B ISCM</text>
+              <text class="n-tag"   x="422" y="654" text-anchor="middle">PERLU KONFIRMASI</text>
+            </g>
+
+            <g class="node" data-node="migrasi" data-kind="custom" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Cleansing dan Migrasi Data Katalog">
+              <title>Cleansing &amp; migrasi data katalog dari ISCM/ESCM &middot; empat tahap &middot; kustomisasi</title>
+              <rect class="n-mask" x="600" y="598" width="200" height="66" rx="3"/>
+              <rect class="n-box"  x="600" y="598" width="200" height="66" rx="3"/>
+              <text class="n-title" x="700" y="625" text-anchor="middle">Cleansing &amp; Migrasi</text>
+              <text class="n-sub"   x="700" y="640" text-anchor="middle">ekspor &rarr; template &rarr; mapping &rarr; impor</text>
+              <text class="n-tag"   x="700" y="654" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="jasa" data-kind="custom" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Master Jasa">
+              <title>Master Jasa &middot; kelompok dasar klasifikasi awal &middot; status OPEN</title>
+              <rect class="n-mask" x="878" y="598" width="200" height="66" rx="3"/>
+              <rect class="n-box"  x="878" y="598" width="200" height="66" rx="3"/>
+              <text class="n-title" x="978" y="625" text-anchor="middle">Master Jasa</text>
+              <text class="n-sub"   x="978" y="640" text-anchor="middle">kelompok dasar &middot; OPEN</text>
+              <text class="n-tag"   x="978" y="654" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
+            <g class="node" data-node="vendor" data-kind="custom" data-klas="KUSTOMISASI" tabindex="0" role="button" aria-label="Master Vendor">
+              <title>Master Vendor &middot; template minimal &amp; prosedur approval &middot; status OPEN</title>
+              <rect class="n-mask" x="1156" y="598" width="200" height="66" rx="3"/>
+              <rect class="n-box"  x="1156" y="598" width="200" height="66" rx="3"/>
+              <text class="n-title" x="1256" y="625" text-anchor="middle">Master Vendor</text>
+              <text class="n-sub"   x="1256" y="640" text-anchor="middle">NPWP, alamat, kontak, pajak</text>
+              <text class="n-tag"   x="1256" y="654" text-anchor="middle">KUSTOMISASI</text>
+            </g>
+
             <!-- field note -->
             <g id="note-lapangan">
-              <rect class="note-box" x="756" y="88" width="412" height="118"/>
+              <rect class="note-box" x="756" y="88" width="412" height="136"/>
               <text class="note-head" x="768" y="108">ATURAN TOMBOL &amp; TITIK AKHIR CAKUPAN</text>
               <text class="note-line" x="768" y="128">&bull; Create RFQ hanya tersedia setelah PR berstatus In progress.</text>
               <text class="note-line" x="768" y="146">&bull; Alur berhenti pada pembentukan Purchase Order.</text>
               <text class="note-line" x="768" y="164">&bull; Receipt, QC/Rikmatek, validasi, dan retur di luar cakupan.</text>
               <text class="note-line" x="768" y="182">&bull; Field PRK/SKK hanya dibaca &mdash; modul ini tidak mengelola pagu.</text>
+              <text class="note-line" x="768" y="200">&bull; Jangan impor katalog sebelum cleansing selesai (bagian 3.5).</text>
             </g>
           </svg>
         </div>
 
         <div class="view-note" id="view-note">
-          Klik salah satu kotak untuk membuka spesifikasinya, atau pilih satu sudut pandang di atas.
+          Klik salah satu kotak untuk membuka spesifikasinya, atau pilih satu sudut pandang di atas. Pita di bawah diagram memuat prasyarat master data hasil MoM 24 Agustus 2026 (bagian 3.4&ndash;3.7).
         </div>
 
         <div class="detail" id="detail" hidden></div>
@@ -669,7 +736,7 @@ footer {
       </div>
       <footer>
         <span>PRJ-0006 &nbsp;|&nbsp; Logistic &mdash; SCM &nbsp;|&nbsp; KAITECH &times; PLN ES</span>
-        <span>Sumber: Blueprint-Logistic.pdf &amp; Buku 04 &mdash; Pengadaan, SCM dan Vendor</span>
+        <span>Sumber: Blueprint-Purchase-Request-SCM-v1.1.pdf, MoM Master Data 24 Agu 2026 &amp; Buku 04 &mdash; Pengadaan, SCM dan Vendor</span>
       </footer>
   </main>
 </div>
@@ -752,9 +819,98 @@ footer {
         'Economic Life &mdash; umur ekonomis, dasar pembeda aset vs consumable.',
         'Tab Estimasi Harga &mdash; Cost dan Sales Price per Group wilayah.'
       ],
-      meta: [['Model', 'product'], ['Kedudukan', 'Prasyarat, bukan alur PR'], ['Register', 'SCM-001']],
-      note: 'Cluster SCM, Grading SCM, dan Economic Life bukan bawaan Odoo &mdash; ketiganya kustomisasi yang ditambahkan pada model product. Tab Estimasi Harga juga perlu model baris tersendiri (product, Group, Cost, Sales Price).',
-      gap: 'Daftar nilai dan skema Cluster SCM belum ditetapkan lengkap, dan daftar pilihan Grading SCM beserta skema penilaiannya (A/B/C) masih perlu dikonfirmasi. Keduanya prasyarat baris PR.'
+      meta: [['Model', 'product'], ['Kedudukan', 'Prasyarat, bukan alur PR'], ['Isi katalog', 'Migrasi dari ISCM/ESCM'], ['Register', 'SCM-001']],
+      note: 'Cluster SCM, Grading SCM, dan Economic Life bukan bawaan Odoo &mdash; ketiganya kustomisasi yang ditambahkan pada model product. Tab Estimasi Harga juga perlu model baris tersendiri (product, Group, Cost, Sales Price). Isi katalognya sendiri datang dari cleansing &amp; migrasi ISCM/ESCM, mengikuti kaidah nomenklatur yang sedang disusun &mdash; lihat pita prasyarat master data di bawah diagram.',
+      gap: 'Daftar nilai dan skema Cluster SCM belum ditetapkan lengkap, dan daftar pilihan Grading SCM beserta skema penilaiannya (A/B/C) masih perlu dikonfirmasi. Keduanya prasyarat baris PR. Di atasnya, kaidah nomenklatur dan keputusan single source of truth master katalog (Odoo vs ISCM) juga belum dikunci.'
+    },
+
+    iscm: {
+      title: 'Katalog ISCM / ESCM', klas: 'PERLU KONFIRMASI', where: 'Sistem existing &middot; Blueprint bagian 3.4, 3.5 &amp; 7',
+      body: [
+        'ISCM/HOMe adalah katalog material yang berjalan hari ini. Struktur penamaannya memakai nomor normalisasi sepuluh digit, namun penggunaannya masih parsial untuk item captive. Kolom nomenklatur dan keterangan pada ISCM sanggup menampung spesifikasi, hanya saja kedalaman spesifikasinya belum disepakati.',
+        'Isi katalognya masih banyak yang generik dan berpotensi duplikat &mdash; helm, sarung tangan, tangga &mdash; serta belum memisahkan stock dan non-stock. Akibatnya pengadaan di UP maupun pusat belum terpantau secara sistemik.'
+      ],
+      list: [
+        'Nomor normalisasi sepuluh digit, dipakai parsial untuk item captive.',
+        'Kolom nomenklatur &amp; keterangan sanggup menampung spesifikasi.',
+        'Nama item generik dan berpotensi duplikat.',
+        'Belum ada pemisahan stock vs non-stock yang tegas.',
+        'Menjadi sumber data cleansing dan migrasi material, jasa, dan vendor.'
+      ],
+      meta: [['Kedudukan', 'Sumber data existing'], ['Klasifikasi', 'Perlu konfirmasi'], ['Rujukan', 'MoM 24 Agu 2026']],
+      note: 'Blueprint bagian 7 menempatkan ISCM/ESCM sebagai titik integrasi berstatus Perlu Konfirmasi &mdash; keputusan akhir Odoo sebagai single source of truth masih menunggu otoritas BPO/Logistik.',
+      gap: 'Kolom apa saja yang wajib ikut pada export ISCM ke Excel untuk migrasi belum final; perlu dipertemukan antara usulan field dari Kaitech dan kebutuhan Logistik.'
+    },
+
+    nomenklatur: {
+      title: 'Kebijakan Nomenklatur &amp; Governance Master Katalog', klas: 'PERLU KONFIRMASI', where: 'Tata kelola master data &middot; Blueprint bagian 3.4',
+      body: [
+        'MoM 24 Agustus 2026 menyepakati perlunya satu kaidah penamaan material dan jasa yang konsisten, supaya seluruh pemangku kepentingan punya pemahaman yang sama, deviasi penamaan berkurang, dan duplikasi tercegah.',
+        'Yang belum diputuskan justru hal paling menentukan: siapa yang memelihara master katalog. Opsi A menjadikan Odoo sebagai single source of truth &mdash; direkomendasikan tim developer karena mengurangi kompleksitas integrasi dan beban maintain. Opsi B mempertahankan master katalog di ISCM dengan integrasi ke Odoo.'
+      ],
+      list: [
+        'Jumlah elemen wajib &amp; urutan penamaan &mdash; draft awal disiapkan Jaka Sumantri.',
+        'Batas karakter maksimal &mdash; usulan awal 40 karakter, belum final.',
+        'Kedalaman spesifikasi (depth) pada nama item &mdash; sampai level spek mana.',
+        'Cut-off: aturan baru berlaku untuk pengadaan baru sejak tanggal cut-off (usulan 2027 / awal implementasi Odoo).',
+        'Item yang sudah terikat kontrak tidak diubah sepihak &mdash; lewat edaran / surat himbauan.',
+        'Penerapan wajib didukung aturan tertulis dan otoritas formal BPO Logistik.'
+      ],
+      meta: [['Klasifikasi', 'Perlu Konfirmasi'], ['Register', 'SCM-006'], ['Sumber', 'MoM Master Data 24 Agu 2026']],
+      note: 'Keterkaitan anggaran: penurunan RKAP ikut menentukan siapa yang berwenang melakukan pengadaan (pusat vs UP). Diperlukan aturan pengendalian anggaran agar unit pelaksana tidak mengadakan tanpa alokasi, dan agar master data yang dipublikasikan tidak memicu pengadaan redundan antar-UP.',
+      gap: 'Keputusan single source of truth memerlukan konfirmasi formal beserta penandatanganan otoritas BPO/Logistik, karena berdampak pada proses operasional dan tracking kontrak di ISCM. Cut-off date, kedalaman atribut nomenklatur, dan persyaratan surat edaran sebelum rollout juga belum ditutup.'
+    },
+
+    migrasi: {
+      title: 'Cleansing &amp; Migrasi Data Katalog', klas: 'KUSTOMISASI', where: 'Prasyarat data &middot; Blueprint bagian 3.5',
+      body: [
+        'Langkah operasional memindahkan katalog dari ISCM/ESCM ke Odoo, disepakati dalam empat tahap dengan PIC yang sudah bernama. Urutannya tidak boleh dibalik.',
+        'Prinsip wajibnya satu kalimat: jangan mengimpor data sebelum cleansing selesai. Verifikasi berjalan bertahap dengan cut-off yang jelas untuk data baru, supaya duplikasi dan deviasi penamaan pada katalog lama tidak ikut terbawa ke Odoo.'
+      ],
+      list: [
+        'Tahap 1 &mdash; ekspor daftar material existing ke Excel (nama, nomor normalisasi, kategori, jenis aset, keterangan spesifikasi). PIC: Priska Siagian / Tim Logistik.',
+        'Tahap 2 &mdash; penyediaan template Excel / format migrasi berisi field wajib Odoo. PIC: Arief Afandy / Kaitech.',
+        'Tahap 3 &mdash; cleansing dan mapping bersama, memetakan nama produk, kategori, jenis aset, keterangan spesifikasi, vendor. PIC: Tim SCM &amp; Kaitech.',
+        'Tahap 4 &mdash; impor bertahap ke Odoo setelah cleansing dan verifikasi selesai. PIC: Kaitech.io.'
+      ],
+      meta: [['Klasifikasi', 'Kustomisasi'], ['Status', 'OPEN'], ['Register', 'SCM-007'], ['Uji', 'SCM-T07']],
+      note: 'Skenario SCM-T07 menguji impor sampel hasil cleansing memakai template migrasi, memverifikasi field wajib &mdash; nama produk, kategori, jenis aset, vendor &mdash; terisi benar.',
+      gap: 'Daftar kolom final yang wajib disertakan pada export ISCM ke Excel masih perlu disepakati antara Kaitech dan tim Logistik.'
+    },
+
+    jasa: {
+      title: 'Master Jasa', klas: 'KUSTOMISASI', where: 'Prasyarat data &middot; Blueprint bagian 3.6',
+      body: [
+        'Jasa adalah domain yang belum terstruktur pada katalog existing. Yang disepakati baru langkah minimalnya: membuat kelompok dasar agar klasifikasi awal bisa berjalan.',
+        'Detail jasa dikembangkan lebih lanjut setelah mapping awal katalog material selesai &mdash; karena itu urutannya menyusul, bukan paralel.'
+      ],
+      list: [
+        'Kompilasi kelompok dasar jasa sebagai prasyarat klasifikasi awal.',
+        'Dipetakan ke Odoo mengikuti hasil mapping katalog material.',
+        'PIC: Mas Fandi.',
+        'Detail jenis jasa menyusul setelah mapping material.'
+      ],
+      meta: [['Klasifikasi', 'Kustomisasi'], ['Status', 'OPEN'], ['PIC', 'Mas Fandi'], ['Register', 'SCM-008']],
+      note: '',
+      gap: 'Daftar jenis jasa masih berstatus OPEN. Selama kelompok dasarnya belum ada, baris PR untuk pekerjaan jasa belum punya rujukan master.'
+    },
+
+    vendor: {
+      title: 'Master Vendor', klas: 'KUSTOMISASI', where: 'Prasyarat data &middot; Blueprint bagian 3.7',
+      body: [
+        'Disepakati satu template minimal master vendor yang memuat data identitas penting, supaya pencarian vendor di Odoo mudah dan terkoordinasi lintas fungsi.',
+        'Templatenya disiapkan tim implementasi Kaitech dan divalidasi tim logistik. Vendor baru wajib melalui prosedur approval sebelum dapat dipakai pada transaksi pengadaan &mdash; termasuk sebagai Supplier pada dialog Create RFQ.'
+      ],
+      list: [
+        'Nama Vendor &mdash; nama resmi badan usaha atau perorangan.',
+        'NPWP &mdash; Nomor Pokok Wajib Pajak vendor.',
+        'Alamat &mdash; alamat resmi vendor.',
+        'Kontak &mdash; nama, telepon, dan/atau email.',
+        'Data Pajak &mdash; kelengkapan perpajakan lain yang dipersyaratkan.'
+      ],
+      meta: [['Klasifikasi', 'Kustomisasi'], ['Status', 'OPEN'], ['Dipakai pada', 'Supplier RFQ / PO'], ['Register', 'SCM-009']],
+      note: 'Template disiapkan Kaitech, divalidasi tim logistik. Approval vendor baru menjadi syarat sebelum vendor dipakai pada transaksi.',
+      gap: 'Belum diputuskan apakah vendor master di-maintain di Odoo atau tetap di ESCM, dan bagaimana bentuk workflow formal approval vendor baru.'
     },
 
     approval: {
@@ -919,6 +1075,11 @@ footer {
       lane: false,
       note: '<b>PR otomatis.</b> Jalur kedua pembentukan PR: kontrak captive diproses sistem, PR terbentuk dengan Source Document mengarah ke nomor kontrak. Setelah itu langkahnya identik dengan PR manual.'
     },
+    masterdata: {
+      nodes: ['iscm', 'nomenklatur', 'migrasi', 'jasa', 'vendor', 'material', 'rfq'],
+      lane: false,
+      note: '<b>Prasyarat master data (MoM 24 Agustus 2026).</b> Katalog ISCM/ESCM dibersihkan mengikuti kaidah nomenklatur yang sedang disusun, lalu diimpor bertahap menjadi Master Material di Odoo. Master jasa menyusul setelah mapping material selesai; master vendor menyediakan Supplier bagi RFQ. Prinsip wajibnya: jangan mengimpor sebelum cleansing selesai.'
+    },
     referensi: {
       nodes: ['anggaran', 'analytic', 'rfq', 'po'],
       lane: false,
@@ -930,9 +1091,9 @@ footer {
       note: '<b>Batas sistem.</b> Setelah Purchase Order terbentuk, dokumen ini selesai. Penerimaan barang, pemeriksaan mutu (Rikmatek), karantina, validasi, retur, klaim garansi, dan pembayaran seluruhnya di luar cakupan.'
     },
     belum: {
-      nodes: ['material', 'pr_otomatis', 'approval', 'contract'],
+      nodes: ['material', 'pr_otomatis', 'approval', 'contract', 'iscm', 'nomenklatur', 'migrasi', 'jasa', 'vendor'],
       lane: false,
-      note: '<b>Belum dikunci.</b> Daftar nilai Cluster SCM dan skema Grading SCM, mekanisme trigger PR otomatis dari kontrak, peran yang berwenang atas Line Status &amp; Approval, serta rincian layar Configuration modul Purchase &mdash; semuanya masih menunggu konfirmasi BPO Logistik/SCM.'
+      note: '<b>Belum dikunci.</b> Dari rancangan awal: daftar nilai Cluster SCM dan skema Grading SCM, mekanisme trigger PR otomatis dari kontrak, peran yang berwenang atas Line Status &amp; Approval, serta rincian layar Configuration modul Purchase. Dari MoM 24 Agustus 2026: keputusan single source of truth master katalog, cut-off nomenklatur, kedalaman atribut &amp; batas 40 karakter, kolom wajib export ISCM, perlakuan item yang sudah terikat kontrak, lokasi maintain master vendor beserta workflow approval-nya, kontak PIC tim SCM/Logistik, dan surat edaran yang harus terbit sebelum rollout.'
     }
   };
 
